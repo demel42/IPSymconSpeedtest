@@ -1,0 +1,13 @@
+{
+	"id": "{C631E099-15CB-4CF7-9E7C-C55F63912BE5}",
+	"name": "Speedtest",
+	"type": 3,
+	"vendor": "",
+	"aliases": [
+		"Speedtest"
+	],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": [],
+	"prefix": "Speedtest"
+}
