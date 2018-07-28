@@ -108,13 +108,13 @@ class Speedtest extends IPSModule
 		$upload = '';
 				
 		if ($ok) {
-			$this->SendDebug(__FUNCTION__, 'data=" . $data, 0);
+			$this->SendDebug(__FUNCTION__, 'data=' . $data, 0);
 			$jdata = json_decode($data, true);
 			if ($jdata == '') {
 				$ok = false;
-				$err = "malformed data\n";
+				$err = 'malformed data';
 			} else {
-				$this->SendDebug(__FUNCTION__, 'jdata=" . print_r($jdata, true), 0);
+				$this->SendDebug(__FUNCTION__, 'jdata=' . print_r($jdata, true), 0);
 				if (isset($jdata['client']['isp'])) {
 					$isp = $jdata['client']['isp'];
 				}
@@ -145,7 +145,7 @@ class Speedtest extends IPSModule
 			$this->SetValue('Upload', $upload);
 			$this->SetValue('Download', $download);
 		} else {
-			$msg = "failed: exitcode=$exitcode, err=$err\n";
+			$msg = 'failed: exitcode=' . $exitcode . ', err=' . $err;
 			$this->LogMessage(__FUNCTION__ . ': ' . $msg, KL_WARNING);
 			$this->SendDebug(__FUNCTION__ . ': ' . $msg, 0);
 		}
