@@ -30,6 +30,7 @@
 #### Linux (Raspbian u.a.) 
 
 `sudo apt-get install python-pip`
+
 `sudo pip install speedtest-cli`
 
 ### b. Laden des Moduls
