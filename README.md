@@ -32,6 +32,10 @@
 `sudo apt-get install python-pip`<br>
 `sudo pip install speedtest-cli`
 
+#### andere Betriebssysteme
+
+Suche nach __speedtest-cli installieren__ im Internet bringt z.B. diese Seite: https://www.howtogeek.com/179016/how-to-test-your-internet-speed-from-the-command-line/
+
 ### b. Laden des Moduls
 
 Die Konsole von IP-Symcon öffnen. Im Objektbaum unter Kerninstanzen die Instanz __*Modules*__ durch einen doppelten Mausklick öffnen.
