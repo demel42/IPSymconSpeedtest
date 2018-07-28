@@ -66,7 +66,13 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 | zu ignorierende Server    | string   |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
 | Aktualisiere Daten ...    | integer  | 60           | Aktualisierungsintervall, Angabe in Minuten |
 
-Hinweis: dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`
+Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`.<br>
+
+I.d.R ist die automatische Ermittlung der Servers völlig ausreichend. Manchmal ist es aber so, das ein Server bei guter Erreichbarkeit einen zu geringen Durchsatz bietet; dann sollte man diesen Server ignorieren.
+
+Wenn das Updateintervall auf **0** steht, wir kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgeegten Zeiten durchführen.
+Hinweis: ein Test dauert bis zu einer Minute, in der Zeit wird die Bandbreite des Internetzugangs vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
+
 
 ## 6. Anhang
 
