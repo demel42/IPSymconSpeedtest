@@ -98,7 +98,7 @@ class Speedtest extends IPSModule
 			$ok = false;
 		}
 
-		$this->SendDebug(__FUNCTION__, 'duration=' . $duration . ', exitcode=' . $exitcode . ', ok=" . ($ok ? 'true' : 'false') . ', err=' . $err, 0);
+		$this->SendDebug(__FUNCTION__, 'duration=' . $duration . ', exitcode=' . $exitcode . ', ok=' . ($ok ? 'true' : 'false') . ', err=' . $err, 0);
 
 		$isp = '';
 		$ip = '';
