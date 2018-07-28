@@ -29,8 +29,7 @@
 
 #### Linux (Raspbian u.a.) 
 
-`sudo apt-get install python-pip`
-
+`sudo apt-get install python-pip`<br>
 `sudo pip install speedtest-cli`
 
 ### b. Laden des Moduls
@@ -55,13 +54,19 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 
 ### zentrale Funktion
 
+`boolean Speedtest_PerformTest(integer $InstanzID, integer $preferred_server, string $exclude_server)`<br>
+
 ## 5. Konfiguration:
 
 ### Variablen
 
 | Eigenschaft               | Typ      | Standardwert | Beschreibung |
 | :-----------------------: | :-----:  | :----------: | :----------------------------------------------------------------------------------------------------------: |
+| Bevorzugter Server        | integer  |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
+| zu ignorierende Server    | string   |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
 | Aktualisiere Daten ...    | integer  | 60           | Aktualisierungsintervall, Angabe in Minuten |
+
+Hinweis: dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`
 
 ## 6. Anhang
 

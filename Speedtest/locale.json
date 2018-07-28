@@ -1,10 +1,25 @@
 {
 	"translations": {
 		"de": {
+			"automatically select" : "automatische Auswahl",
+			"Preferred server": "bevorzugter Server",
+
+			"Excluded server (comma-separated)": "Auszuschliessender Server (Komma-separiert)",
+			"Aufzählung": "Aufzählung",
+
 			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
 			"Minutes": "Minuten",
 
-			"Update data": "Aktualisiere Dateb",
+			"Updating the data takes up to 1 minute": "Die Aktualisierung dauert bis zu einer Minute",
+			"Update data": "Aktualisiere Daten",
+
+			"Internet-Provider": "Internet-Provider",
+			"external IP": "externe IP",
+			"Server": "Server",
+			"Ping": "Ping",
+			"Upload": "Upload",
+			"Download": "Download",
+			"Last test": "letzter Test",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",

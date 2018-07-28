@@ -47,6 +47,8 @@ class Speedtest extends IPSModule
         parent::Create();
 
         $this->RegisterPropertyInteger('update_interval', '0');
+        $this->RegisterPropertyInteger('preferred_server', '0');
+        $this->RegisterPropertyString('exclude_server', '');
 
         $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
 
@@ -59,17 +61,53 @@ class Speedtest extends IPSModule
         parent::ApplyChanges();
 
         $vpos = 0;
-        $this->MaintainVariable('ISP', $this->Translate('ISP'), IPS_STRING, '', $vpos++, true);
+        $this->MaintainVariable('ISP', $this->Translate('Internet-Provider'), IPS_STRING, '', $vpos++, true);
         $this->MaintainVariable('IP', $this->Translate('external IP'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Host', $this->Translate('Test-Host'), IPS_STRING, '', $vpos++, true);
+        $this->MaintainVariable('Server', $this->Translate('Server'), IPS_STRING, '', $vpos++, true);
         $this->MaintainVariable('Ping', $this->Translate('Ping'), IPS_FLOAT, 'Speedtest.ms', $vpos++, true);
         $this->MaintainVariable('Upload', $this->Translate('Upload'), IPS_FLOAT, 'Speedtest.MBits', $vpos++, true);
         $this->MaintainVariable('Download', $this->Translate('Download'), IPS_FLOAT, 'Speedtest.MBits', $vpos++, true);
-        $this->MaintainVariable('LastStatus', $this->Translate('Last status'), IPS_INTEGER, '~UnixTimestamp', $vpos++, true);
+        $this->MaintainVariable('LastTest', $this->Translate('Last test'), IPS_INTEGER, '~UnixTimestamp', $vpos++, true);
 
         $this->SetStatus(102);
 
         $this->SetUpdateInterval();
+    }
+
+    public function GetConfigurationForm()
+    {
+        $options = [];
+        $options[] = ['label' => $this->Translate('automatically select'), 'value' => 0];
+
+		$data = exec('speedtest-cli --list 2>&1', $output, $exitcode);
+		$n = 0;
+		foreach ($output as $line) {
+			if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
+				if ($r[1] > 0) {
+					$options[] = ['label' => $r[2], 'value' => $r[1]];
+					if ($n++ == 100)
+						break;
+				}
+			}
+		}
+
+        $formElements = [];
+		$formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
+		$formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
+		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'Aufzählung'];
+		$formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
+		$formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
+
+        $formActions = [];
+        $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
+        $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
+
+        $formStatus = [];
+        $formStatus[] = ['code' => '101', 'icon' => 'inactive', 'caption' => 'Instance getting created'];
+        $formStatus[] = ['code' => '102', 'icon' => 'active', 'caption' => 'Instance is active'];
+        $formStatus[] = ['code' => '104', 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
+
+        return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
     }
 
     protected function SetUpdateInterval()
@@ -81,8 +119,28 @@ class Speedtest extends IPSModule
 
     public function UpdateData()
     {
+		$preferred_server = $this->ReadPropertyInteger('preferred_server');
+		$exclude_server = $this->ReadPropertyString('exclude_server');
+
+		$this->PerformTest($preferred_server, $exclude_server);
+	}
+
+    public function PerformTest(int $preferred_server, string $exclude_server)
+    {
+		$cmd = 'speedtest-cli --secure --json';
+		if ($preferred_server > 0) {
+			$cmd .= ' --server=' . $preferred_server;
+		}
+		if ($exclude_server != '') {
+			$sV = explode(',', $exclude_server);
+			foreach ($sV as $s) {
+				$cmd .= ' --exclude=' . $s;
+			}
+		}
+		$cmd .= ' 2>&1';
+
         $time_start = microtime(true);
-        $data = exec('speedtest-cli --secure --json 2>&1', $output, $exitcode);
+        $data = exec($cmd, $output, $exitcode);
         $duration = floor((microtime(true) - $time_start) * 100) / 100;
 
         if ($exitcode) {
@@ -98,11 +156,12 @@ class Speedtest extends IPSModule
             $ok = false;
         }
 
-        $this->SendDebug(__FUNCTION__, 'duration=' . $duration . ', exitcode=' . $exitcode . ', ok=' . ($ok ? 'true' : 'false') . ', err=' . $err, 0);
+        $this->SendDebug(__FUNCTION__, 'duration=' . $duration . ', exitcode=' . $exitcode . ', status=' . ($ok ? 'ok' : 'fail') . ', err=' . $err, 0);
 
         $isp = '';
         $ip = '';
         $sponsor = '';
+        $id = '';
         $ping = '';
         $download = '';
         $upload = '';
@@ -124,6 +183,9 @@ class Speedtest extends IPSModule
                 if (isset($jdata['server']['sponsor'])) {
                     $sponsor = $jdata['server']['sponsor'];
                 }
+                if (isset($jdata['server']['id'])) {
+                    $id = $jdata['server']['id'];
+				}
                 if (isset($jdata['ping'])) {
                     $ping = $jdata['ping'];
                 }
@@ -133,21 +195,25 @@ class Speedtest extends IPSModule
                 if (isset($jdata['upload'])) {
                     $upload = floor($jdata['upload'] / 1024 / 1024 * 10) / 10;
                 }
-                $this->SendDebug(__FUNCTION__, ' ... isp=' . $isp . ' ip=' . $ip . ' sponsor=' . $sponsor . ' ping=' . $ping . ' download=' . $download . ' upload=' . $upload, 0);
+                $this->SendDebug(__FUNCTION__, ' ... isp=' . $isp . ', ip=' . $ip . ', sponsor=' . $sponsor . ', id=' . $id . ', ping=' . $ping . ', download=' . $download . ', upload=' . $upload, 0);
             }
         }
 
+
         if ($ok) {
+			IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
             $this->SetValue('ISP', $isp);
             $this->SetValue('IP', $ip);
-            $this->SetValue('Host', $sponsor);
+            $this->SetValue('Server', $sponsor);
             $this->SetValue('Ping', $ping);
             $this->SetValue('Upload', $upload);
             $this->SetValue('Download', $download);
         } else {
             $msg = 'failed: exitcode=' . $exitcode . ', err=' . $err;
-            $this->LogMessage(__FUNCTION__ . ': ' . $msg, KL_WARNING);
-            $this->SendDebug(__FUNCTION__ . ': ' . $msg, 0);
+            $this->LogMessage(__CLASS__ . '::' . __FUNCTION__ . ': ' . $msg, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, $msg, 0);
         }
+
+		$this->SetValue('LastTest', time());
     }
 }
