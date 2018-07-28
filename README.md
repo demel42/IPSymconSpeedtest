@@ -27,6 +27,13 @@
 
 ### a. Laden des Moduls
 
+#### Linux (Raspbian u.a.) 
+
+`sudo apt-get install python-pip`
+`sudo pip install speedtest-cli`
+
+### b. Laden des Moduls
+
 Die Konsole von IP-Symcon öffnen. Im Objektbaum unter Kerninstanzen die Instanz __*Modules*__ durch einen doppelten Mausklick öffnen.
 
 In der _Modules_ Instanz rechts oben auf den Button __*Hinzufügen*__ drücken.
@@ -39,7 +46,7 @@ und mit _OK_ bestätigen.
 
 Anschließend erscheint ein Eintrag für das Modul in der Liste der Instanz _Modules_
 
-### b. Einrichtung in IPS
+### c. Einrichtung in IPS
 
 In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie, unter der man die Instanz hinzufügen will, und Hersteller _(sonstiges)_ und als Gerät _Speedtest_ auswählen.
 
