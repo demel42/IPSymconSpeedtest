@@ -79,24 +79,25 @@ class Speedtest extends IPSModule
         $options = [];
         $options[] = ['label' => $this->Translate('automatically select'), 'value' => 0];
 
-		$data = exec('speedtest-cli --list 2>&1', $output, $exitcode);
-		$n = 0;
-		foreach ($output as $line) {
-			if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
-				if ($r[1] > 0) {
-					$options[] = ['label' => $r[2], 'value' => $r[1]];
-					if ($n++ == 100)
-						break;
-				}
-			}
-		}
+        $data = exec('speedtest-cli --list 2>&1', $output, $exitcode);
+        $n = 0;
+        foreach ($output as $line) {
+            if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
+                if ($r[1] > 0) {
+                    $options[] = ['label' => $r[2], 'value' => $r[1]];
+                    if ($n++ == 100) {
+                        break;
+                    }
+                }
+            }
+        }
 
         $formElements = [];
-		$formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
-		$formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
-		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'Aufzählung'];
-		$formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
-		$formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
+        $formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
+        $formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'Aufzählung'];
+        $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
+        $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
 
         $formActions = [];
         $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
@@ -119,25 +120,25 @@ class Speedtest extends IPSModule
 
     public function UpdateData()
     {
-		$preferred_server = $this->ReadPropertyInteger('preferred_server');
-		$exclude_server = $this->ReadPropertyString('exclude_server');
+        $preferred_server = $this->ReadPropertyInteger('preferred_server');
+        $exclude_server = $this->ReadPropertyString('exclude_server');
 
-		$this->PerformTest($preferred_server, $exclude_server);
-	}
+        $this->PerformTest($preferred_server, $exclude_server);
+    }
 
     public function PerformTest(int $preferred_server, string $exclude_server)
     {
-		$cmd = 'speedtest-cli --secure --json';
-		if ($preferred_server > 0) {
-			$cmd .= ' --server=' . $preferred_server;
-		}
-		if ($exclude_server != '') {
-			$sV = explode(',', $exclude_server);
-			foreach ($sV as $s) {
-				$cmd .= ' --exclude=' . $s;
-			}
-		}
-		$cmd .= ' 2>&1';
+        $cmd = 'speedtest-cli --secure --json';
+        if ($preferred_server > 0) {
+            $cmd .= ' --server=' . $preferred_server;
+        }
+        if ($exclude_server != '') {
+            $sV = explode(',', $exclude_server);
+            foreach ($sV as $s) {
+                $cmd .= ' --exclude=' . $s;
+            }
+        }
+        $cmd .= ' 2>&1';
 
         $time_start = microtime(true);
         $data = exec($cmd, $output, $exitcode);
@@ -185,7 +186,7 @@ class Speedtest extends IPSModule
                 }
                 if (isset($jdata['server']['id'])) {
                     $id = $jdata['server']['id'];
-				}
+                }
                 if (isset($jdata['ping'])) {
                     $ping = $jdata['ping'];
                 }
@@ -199,9 +200,8 @@ class Speedtest extends IPSModule
             }
         }
 
-
         if ($ok) {
-			IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
+            IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
             $this->SetValue('ISP', $isp);
             $this->SetValue('IP', $ip);
             $this->SetValue('Server', $sponsor);
@@ -214,6 +214,6 @@ class Speedtest extends IPSModule
             $this->SendDebug(__FUNCTION__, $msg, 0);
         }
 
-		$this->SetValue('LastTest', time());
+        $this->SetValue('LastTest', time());
     }
 }
