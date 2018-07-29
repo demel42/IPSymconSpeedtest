@@ -128,17 +128,35 @@ class Speedtest extends IPSModule
 
     public function PerformTest(int $preferred_server, string $exclude_server)
     {
-        $cmd = 'speedtest-cli --secure --json';
+        $cmd = 'speedtest-cli --json';
+
+		// use https instead of http
+        // $cmd .= ' --secure';
+
+		// Do not pre allocate upload data. Pre allocation is
+		// enabled by default to improve upload performance. To
+		// support systems with insufficient memory, use this
+		// option to avoid a MemoryError
+		$cmd .= ' --no-pre-allocate';
+
+		// Specify a server ID to test against. Can be supplied
+		// multiple times
         if ($preferred_server > 0) {
             $cmd .= ' --server=' . $preferred_server;
         }
+
+		// Exclude a server from selection. Can be supplied
+		// multiple times
         if ($exclude_server != '') {
-            $sV = explode(',', $exclude_server);
-            foreach ($sV as $s) {
-                $cmd .= ' --exclude=' . $s;
+            $serverV = explode(',', $exclude_server);
+            foreach ($serverV as $server) {
+                $cmd .= ' --exclude=' . $server;
             }
         }
+
         $cmd .= ' 2>&1';
+
+        $this->SendDebug(__FUNCTION__, 'cmd="' . $cmd . '"', 0);
 
         $time_start = microtime(true);
         $data = exec($cmd, $output, $exitcode);
@@ -191,10 +209,12 @@ class Speedtest extends IPSModule
                     $ping = $jdata['ping'];
                 }
                 if (isset($jdata['download'])) {
-                    $download = floor($jdata['download'] / 1024 / 1024 * 10) / 10;
+					// Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                    $download = floor($jdata['download'] / (1024 * 1024) * 10000) / 10000;
                 }
                 if (isset($jdata['upload'])) {
-                    $upload = floor($jdata['upload'] / 1024 / 1024 * 10) / 10;
+					// Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                    $upload = floor($jdata['upload'] / (1024 * 1024) * 10000) / 10000;
                 }
                 $this->SendDebug(__FUNCTION__, ' ... isp=' . $isp . ', ip=' . $ip . ', sponsor=' . $sponsor . ', id=' . $id . ', ping=' . $ping . ', download=' . $download . ', upload=' . $upload, 0);
             }
