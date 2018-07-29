@@ -130,23 +130,23 @@ class Speedtest extends IPSModule
     {
         $cmd = 'speedtest-cli --json';
 
-		// use https instead of http
+        // use https instead of http
         // $cmd .= ' --secure';
 
-		// Do not pre allocate upload data. Pre allocation is
-		// enabled by default to improve upload performance. To
-		// support systems with insufficient memory, use this
-		// option to avoid a MemoryError
-		$cmd .= ' --no-pre-allocate';
+        // Do not pre allocate upload data. Pre allocation is
+        // enabled by default to improve upload performance. To
+        // support systems with insufficient memory, use this
+        // option to avoid a MemoryError
+        $cmd .= ' --no-pre-allocate';
 
-		// Specify a server ID to test against. Can be supplied
-		// multiple times
+        // Specify a server ID to test against. Can be supplied
+        // multiple times
         if ($preferred_server > 0) {
             $cmd .= ' --server=' . $preferred_server;
         }
 
-		// Exclude a server from selection. Can be supplied
-		// multiple times
+        // Exclude a server from selection. Can be supplied
+        // multiple times
         if ($exclude_server != '') {
             $serverV = explode(',', $exclude_server);
             foreach ($serverV as $server) {
@@ -209,11 +209,11 @@ class Speedtest extends IPSModule
                     $ping = $jdata['ping'];
                 }
                 if (isset($jdata['download'])) {
-					// Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                    // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
                     $download = floor($jdata['download'] / (1024 * 1024) * 10000) / 10000;
                 }
                 if (isset($jdata['upload'])) {
-					// Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                    // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
                     $upload = floor($jdata['upload'] / (1024 * 1024) * 10000) / 10000;
                 }
                 $this->SendDebug(__FUNCTION__, ' ... isp=' . $isp . ', ip=' . $ip . ', sponsor=' . $sponsor . ', id=' . $id . ', ping=' . $ping . ', download=' . $download . ', upload=' . $upload, 0);
