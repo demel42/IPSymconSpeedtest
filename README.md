@@ -54,6 +54,8 @@ Anschließend erscheint ein Eintrag für das Modul in der Liste der Instanz _Mod
 
 In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie, unter der man die Instanz hinzufügen will, und Hersteller _(sonstiges)_ und als Gerät _Speedtest_ auswählen.
 
+Wichtiger Hinweis: wesentlich für den Test ist eine ausreichenden LAN-Leistung des Servers, auf dem IPS läuft. Mit einem normalen Raspberry (3B und älter mit dem onboard 100Mbit-LAN) ermittelt der Speedtest bei mir ca. 88 Mbit/s, mit einem 3B+ (hat ein onboard Gigabit-LAN) bis 190 MBit/s und mit einem iMac gibt es an guten Tagen bis zu 220 MBit/s (der Anschluss ist ein 200 MBit/s). Die CPU-Leistung ist nicht ganz so relevant.
+
 ## 4. Funktionsreferenz
 
 ### zentrale Funktion
@@ -74,8 +76,8 @@ Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --l
 
 I.d.R ist die automatische Ermittlung der Servers völlig ausreichend. Manchmal ist es aber so, das ein Server bei guter Erreichbarkeit einen zu geringen Durchsatz bietet; dann sollte man diesen Server ignorieren.
 
-Wenn das Updateintervall auf **0** steht, wir kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgeegten Zeiten durchführen.
-Hinweis: ein Test dauert bis zu einer Minute, in der Zeit wird die Bandbreite des Internetzugangs vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
+Wenn das Updateintervall auf **0** steht, wir kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgelegten Zeiten durchführen.
+Hinweis: ein Test dauert bis zu einer Minute, währenddessen wird die Bandbreite des Internetzugangs vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
 
 
 ## 6. Anhang
