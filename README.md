@@ -25,7 +25,7 @@
 
 ## 3. Installation
 
-### a. Laden des Moduls
+### a. Betriebssystem vorbereiten
 
 #### Linux (Raspbian u.a.) 
 
