@@ -16,7 +16,7 @@
 4. [Funktionsreferenz](#4-funktionsreferenz)
 5. [Konfiguration](#5-konfiguration)
 6. [Anhang](#6-anhang)
-7. [Versions-Historie](#6-versions-historie)
+7. [Versions-Historie](#7-versions-historie)
 
 ## 1. Funktionsumfang
 
