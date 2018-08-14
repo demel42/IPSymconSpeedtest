@@ -16,6 +16,7 @@
 4. [Funktionsreferenz](#4-funktionsreferenz)
 5. [Konfiguration](#5-konfiguration)
 6. [Anhang](#6-anhang)
+7. [Versions-Historie](#6-versions-historie)
 
 ## 1. Funktionsumfang
 
@@ -88,9 +89,10 @@ GUIDs
 - Instanzen:
   - Speedtest: `{C631E099-15CB-4CF7-9E7C-C55F63912BE5}`
 
-Versions-Historie
+## 7. Versions-Historie
+
 - 1.1 @ 14.08.2018<br>
-  + Option '--no-pre-allocate'
+  Option '--no-pre-allocate'
 
 - 1.0 @ 28.07.2018<br>
   Initiale Version
