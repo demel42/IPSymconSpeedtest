@@ -49,6 +49,7 @@ class Speedtest extends IPSModule
         $this->RegisterPropertyInteger('update_interval', '0');
         $this->RegisterPropertyInteger('preferred_server', '0');
         $this->RegisterPropertyString('exclude_server', '');
+        $this->RegisterPropertyBoolean('no_pre_allocate', true);
 
         $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
 
@@ -95,7 +96,8 @@ class Speedtest extends IPSModule
         $formElements = [];
         $formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
         $formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
-        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'Aufzählung'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'List'];
+		$formElements[] = ['type' => 'CheckBox', 'name' => 'no_pre_allocate', 'caption' => 'Set option --no_pre_allocate'];
         $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
         $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
 
@@ -137,7 +139,10 @@ class Speedtest extends IPSModule
         // enabled by default to improve upload performance. To
         // support systems with insufficient memory, use this
         // option to avoid a MemoryError
-        $cmd .= ' --no-pre-allocate';
+        $no_pre_allocate = $this->ReadPropertyBoolean('no_pre_allocate');
+		if ($no_pre_allocate) {
+			$cmd .= ' --no-pre-allocate';
+		}
 
         // Specify a server ID to test against. Can be supplied
         // multiple times

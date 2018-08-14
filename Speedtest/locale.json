@@ -4,8 +4,9 @@
 			"automatically select" : "automatische Auswahl",
 			"Preferred server": "bevorzugter Server",
 
-			"Excluded server (comma-separated)": "Auszuschliessender Server (Komma-separiert)",
-			"Aufzählung": "Aufzählung",
+			"Excluded server (comma-separated)": "Auszuschliessende Server (Komma-separiert)",
+			"List": "Liste",
+			"Set option --no_pre_allocate" : "Option --no_pre_allocate setzen",
 
 			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
 			"Minutes": "Minuten",
