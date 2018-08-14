@@ -87,3 +87,10 @@ GUIDs
 - Modul: `{661B9CEA-A3E8-4CE9-8DDA-F5EA62604474}`
 - Instanzen:
   - Speedtest: `{C631E099-15CB-4CF7-9E7C-C55F63912BE5}`
+
+Versions-Historie
+- 1.1 @ 14.08.2018<br>
+  + Option '--no-pre-allocate'
+
+- 1.0 @ 28.07.2018<br>
+  Initiale Version
