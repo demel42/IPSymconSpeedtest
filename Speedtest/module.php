@@ -97,7 +97,7 @@ class Speedtest extends IPSModule
         $formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
         $formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
         $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'List'];
-		$formElements[] = ['type' => 'CheckBox', 'name' => 'no_pre_allocate', 'caption' => 'Set option --no_pre_allocate'];
+        $formElements[] = ['type' => 'CheckBox', 'name' => 'no_pre_allocate', 'caption' => 'Set option --no_pre_allocate'];
         $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
         $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
 
@@ -140,9 +140,9 @@ class Speedtest extends IPSModule
         // support systems with insufficient memory, use this
         // option to avoid a MemoryError
         $no_pre_allocate = $this->ReadPropertyBoolean('no_pre_allocate');
-		if ($no_pre_allocate) {
-			$cmd .= ' --no-pre-allocate';
-		}
+        if ($no_pre_allocate) {
+            $cmd .= ' --no-pre-allocate';
+        }
 
         // Specify a server ID to test against. Can be supplied
         // multiple times
