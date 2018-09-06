@@ -25,17 +25,13 @@ if (@constant('IPS_BASE') == null) {
     define('KL_CUSTOM', IPS_LOGMESSAGE + 7);			// User Message
 }
 
-if (!defined('IPS_BOOLEAN')) {
-    define('IPS_BOOLEAN', 0);
-}
-if (!defined('IPS_INTEGER')) {
-    define('IPS_INTEGER', 1);
-}
-if (!defined('IPS_FLOAT')) {
-    define('IPS_FLOAT', 2);
-}
-if (!defined('IPS_STRING')) {
-    define('IPS_STRING', 3);
+if (!defined('vtBoolean')) {
+    define('vtBoolean', 0);
+    define('vtInteger', 1);
+    define('vtFloat', 2);
+    define('vtString', 3);
+    define('vtArray', 8);
+    define('vtObject', 9);
 }
 
 class Speedtest extends IPSModule
@@ -53,8 +49,8 @@ class Speedtest extends IPSModule
 
         $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
 
-        $this->CreateVarProfile('Speedtest.ms', IPS_FLOAT, ' ms', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('Speedtest.MBits', IPS_FLOAT, ' MBit/s', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('Speedtest.ms', vtFloat, ' ms', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('Speedtest.MBits', vtFloat, ' MBit/s', 0, 0, 0, 1, '');
     }
 
     public function ApplyChanges()
@@ -62,13 +58,13 @@ class Speedtest extends IPSModule
         parent::ApplyChanges();
 
         $vpos = 0;
-        $this->MaintainVariable('ISP', $this->Translate('Internet-Provider'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('IP', $this->Translate('external IP'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Server', $this->Translate('Server'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Ping', $this->Translate('Ping'), IPS_FLOAT, 'Speedtest.ms', $vpos++, true);
-        $this->MaintainVariable('Upload', $this->Translate('Upload'), IPS_FLOAT, 'Speedtest.MBits', $vpos++, true);
-        $this->MaintainVariable('Download', $this->Translate('Download'), IPS_FLOAT, 'Speedtest.MBits', $vpos++, true);
-        $this->MaintainVariable('LastTest', $this->Translate('Last test'), IPS_INTEGER, '~UnixTimestamp', $vpos++, true);
+        $this->MaintainVariable('ISP', $this->Translate('Internet-Provider'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('IP', $this->Translate('external IP'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('Server', $this->Translate('Server'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('Ping', $this->Translate('Ping'), vtFloat, 'Speedtest.ms', $vpos++, true);
+        $this->MaintainVariable('Upload', $this->Translate('Upload'), vtFloat, 'Speedtest.MBits', $vpos++, true);
+        $this->MaintainVariable('Download', $this->Translate('Download'), vtFloat, 'Speedtest.MBits', $vpos++, true);
+        $this->MaintainVariable('LastTest', $this->Translate('Last test'), vtInteger, '~UnixTimestamp', $vpos++, true);
 
         $this->SetStatus(102);
 
@@ -104,6 +100,13 @@ class Speedtest extends IPSModule
         $formActions = [];
         $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
         $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
+        $formActions = [];
+        $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
+        $formActions[] = [
+                            'type'    => 'Button',
+                            'caption' => 'Module description',
+                            'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
+                        ];
 
         $formStatus = [];
         $formStatus[] = ['code' => '101', 'icon' => 'inactive', 'caption' => 'Instance getting created'];
