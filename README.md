@@ -95,7 +95,8 @@ GUIDs
 
 - 1.2 @ 06.09.2018 18:59<br>
   Versionshistorie dazu,
-  define's der Variablentypen
+  define's der Variablentypen,
+  Schaltfläche mit Link zu README.md im Konfigurationsdialog
 
 - 1.1 @ 14.08.2018 16:51<br>
   Option '--no-pre-allocate'
