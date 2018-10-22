@@ -22,7 +22,7 @@
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 4.4
+ - IP-Symcon ab Version 5
 
 ## 3. Installation
 
