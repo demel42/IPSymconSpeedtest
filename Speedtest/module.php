@@ -100,7 +100,6 @@ class Speedtest extends IPSModule
         $formActions = [];
         $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
         $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
-        $formActions = [];
         $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
         $formActions[] = [
                             'type'    => 'Button',
