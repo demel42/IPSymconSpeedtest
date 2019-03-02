@@ -22,7 +22,8 @@
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 5
+ - IP-Symcon ab Version 5<br>
+   Version 4.4 mit Branch _ips_4.4_ (nur noch Fehlerkorrekturen)
 
 ## 3. Installation
 
