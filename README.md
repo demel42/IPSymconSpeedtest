@@ -1,7 +1,7 @@
 # IPSymconSpeedtest
 
-[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.3-blue.svg)
+[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.4-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![StyleCI](https://github.styleci.io/repos/126683101/shield?branch=master)](https://github.styleci.io/repos/142661222)
@@ -93,6 +93,11 @@ GUIDs
   - Speedtest: `{C631E099-15CB-4CF7-9E7C-C55F63912BE5}`
 
 ## 7. Versions-Historie
+
+- 1.4 @ 22.03.2019 09:50<br>
+  - Schalter, um ein Modul (temporär) zu deaktivieren
+  - Konfigurations-Element IntervalBox -> NumberSpinner
+  - Anpassung IPS 5
 
 - 1.3 @ 22.10.2018 10:55<br>
   - Abspaltung Branch _ips_4.4_
