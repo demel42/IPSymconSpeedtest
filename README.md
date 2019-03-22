@@ -70,10 +70,12 @@ Wichtiger Hinweis: wesentlich für den Test ist eine ausreichenden LAN-Leistung 
 
 | Eigenschaft                     | Typ      | Standardwert | Beschreibung |
 | :-----------------------------: | :-----:  | :----------: | :----------------------------------------------------------------------------------------------------------: |
+| Instanz ist deaktiviert         | boolean  | false        | Instanz temporär deaktivieren |
+|                                 |          |              | |
 | Bevorzugter Server              | integer  |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
 | zu ignorierende Server          | string   |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
 | Option --no-pre-allocate setzen | boolean  |              | Die Option dient zur Vermeinung von Engpässen auf Systemen mit wenig Hauptspeicher |
-|                                 |          |              |                                             |
+|                                 |          |              | |
 | Aktualisiere Daten ...          | integer  | 60           | Aktualisierungsintervall, Angabe in Minuten |
 
 Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`.<br>
