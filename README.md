@@ -20,6 +20,8 @@
 
 ## 1. Funktionsumfang
 
+_Speedtest_ von _Ookla_ (https://www.speedtest.net) bietet ein Tool zu Ermittlung der Internet-Bandbreite. Neben der Webseite gibt es auch ein Kommandozeile-Interface; dieses Interface wird mit diesem Modul genutzt.
+
 ## 2. Voraussetzungen
 
  - IP-Symcon ab Version 5<br>
