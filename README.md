@@ -68,21 +68,21 @@ Wichtiger Hinweis: wesentlich für den Test ist eine ausreichenden LAN-Leistung 
 
 ### Variablen
 
-| Eigenschaft                     | Typ      | Standardwert | Beschreibung |
-| :-----------------------------: | :-----:  | :----------: | :----------------------------------------------------------------------------------------------------------: |
-| Instanz ist deaktiviert         | boolean  | false        | Instanz temporär deaktivieren |
-|                                 |          |              | |
-| Bevorzugter Server              | integer  |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
-| zu ignorierende Server          | string   |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
-| Option --no-pre-allocate setzen | boolean  |              | Die Option dient zur Vermeinung von Engpässen auf Systemen mit wenig Hauptspeicher |
-|                                 |          |              | |
-| Aktualisiere Daten ...          | integer  | 60           | Aktualisierungsintervall, Angabe in Minuten |
+| Eigenschaft                     | Typ     | Standardwert | Beschreibung |
+| :------------------------------ | :------ | :----------- | :----------- |
+| Instanz ist deaktiviert         | boolean | false        | Instanz temporär deaktivieren |
+|                                 |         |              | |
+| Bevorzugter Server              | integer |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
+| zu ignorierende Server          | string  |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
+| Option --no-pre-allocate setzen | boolean |              | Die Option dient zur Vermeinung von Engpässen auf Systemen mit wenig Hauptspeicher |
+|                                 |         |              | |
+| Aktualisiere Daten ...          | integer | 60           | Aktualisierungsintervall, Angabe in Minuten |
 
 Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`.<br>
 
 I.d.R ist die automatische Ermittlung der Servers völlig ausreichend. Manchmal ist es aber so, das ein Server bei guter Erreichbarkeit einen zu geringen Durchsatz bietet; dann sollte man diesen Server ignorieren.
 
-Wenn das Updateintervall auf **0** steht, wir kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgelegten Zeiten durchführen.
+Wenn das Updateintervall auf **0** steht, wird kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgelegten Zeiten durchführen.
 Hinweis: ein Test dauert bis zu einer Minute, währenddessen wird die Bandbreite des Internetzugangs vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
 
 
