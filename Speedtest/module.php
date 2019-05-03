@@ -27,8 +27,8 @@ class Speedtest extends IPSModule
     {
         $s = '';
 
-		$data = exec('speedtest-cli --version 2>&1', $output, $exitcode);
-		if ($exitcode != 0) {
+        $data = exec('speedtest-cli --version 2>&1', $output, $exitcode);
+        if ($exitcode != 0) {
             $s = $this->Translate('The following system prerequisites are missing') . ': speedtest-cli';
         }
 
@@ -88,9 +88,9 @@ class Speedtest extends IPSModule
         $s = $this->CheckPrerequisites();
         if ($s != '') {
             $items = [
-                    [ 'type' => 'Label', 'caption' => $s ],
+                    ['type' => 'Label', 'caption' => $s],
                 ];
-            $formElements[] = ['type'  => 'PopupAlert', 'popup' => [ 'items' => $items ]];
+            $formElements[] = ['type'  => 'PopupAlert', 'popup' => ['items' => $items]];
         }
 
         $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
@@ -118,7 +118,7 @@ class Speedtest extends IPSModule
         $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
         $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
 
-		$formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+        $formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
 
         return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
     }

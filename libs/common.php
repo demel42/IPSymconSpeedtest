@@ -8,7 +8,7 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
 }
 
 if (!defined('IS_INVALIDCONFIG')) {
-	define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
+    define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
 }
 
 trait SpeedtestCommon
