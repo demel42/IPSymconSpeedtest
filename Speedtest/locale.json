@@ -19,6 +19,8 @@
 
 			"Module description": "Modulbeschreibung",
 
+			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
+
 			"Internet-Provider": "Internet-Provider",
 			"external IP": "externe IP",
 			"Server": "Server",
@@ -33,7 +35,7 @@
 			"Instance is inactive": "Instanz ist inaktiv",
 			"Instance is not created": "Instanz wurde nicht erzeugt",
 
-			"Instance is inactive (invalid configuration)": "Instanz ist inaktiv (ungültige Konfiguration)"
+			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)"
 		}
 	}
 }

@@ -7,6 +7,10 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
     define('VARIABLETYPE_STRING', 3);
 }
 
+if (!defined('IS_INVALIDCONFIG')) {
+	define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
+}
+
 trait SpeedtestCommon
 {
     protected function SetValue($Ident, $Value)
@@ -100,5 +104,15 @@ trait SpeedtestCommon
     private function GetArrayElem($data, $var, $dflt)
     {
         return isset($data[$var]) ? $data[$var] : $dflt;
+    }
+
+    protected function GetStatus()
+    {
+        if (IPS_GetKernelVersion() >= 5.1) {
+            return parent::GetStatus();
+        }
+
+        $inst = IPS_GetInstance($this->InstanceID);
+        return $inst['InstanceStatus'];
     }
 }

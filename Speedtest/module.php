@@ -23,6 +23,18 @@ class Speedtest extends IPSModule
         $this->CreateVarProfile('Speedtest.MBits', VARIABLETYPE_FLOAT, ' MBit/s', 0, 0, 0, 1, '');
     }
 
+    private function CheckPrerequisites()
+    {
+        $s = '';
+
+		$data = exec('speedtest-cli --version 2>&1', $output, $exitcode);
+		if ($exitcode != 0) {
+            $s = $this->Translate('The following system prerequisites are missing') . ': speedtest-cli';
+        }
+
+        return $s;
+    }
+
     public function ApplyChanges()
     {
         parent::ApplyChanges();
@@ -35,6 +47,12 @@ class Speedtest extends IPSModule
         $this->MaintainVariable('Upload', $this->Translate('Upload'), VARIABLETYPE_FLOAT, 'Speedtest.MBits', $vpos++, true);
         $this->MaintainVariable('Download', $this->Translate('Download'), VARIABLETYPE_FLOAT, 'Speedtest.MBits', $vpos++, true);
         $this->MaintainVariable('LastTest', $this->Translate('Last test'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
+
+        $s = $this->CheckPrerequisites();
+        if ($s != '') {
+            $this->SetStatus(IS_INVALIDPREREQUISITES);
+            return;
+        }
 
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
@@ -66,6 +84,15 @@ class Speedtest extends IPSModule
         }
 
         $formElements = [];
+
+        $s = $this->CheckPrerequisites();
+        if ($s != '') {
+            $items = [
+                    [ 'type' => 'Label', 'caption' => $s ],
+                ];
+            $formElements[] = ['type'  => 'PopupAlert', 'popup' => [ 'items' => $items ]];
+        }
+
         $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
         $formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
         $formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
@@ -91,6 +118,8 @@ class Speedtest extends IPSModule
         $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
         $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
 
+		$formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+
         return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
     }
 
@@ -111,8 +140,7 @@ class Speedtest extends IPSModule
 
     public function PerformTest(int $preferred_server, string $exclude_server)
     {
-        $inst = IPS_GetInstance($this->InstanceID);
-        if ($inst['InstanceStatus'] == IS_INACTIVE) {
+        if ($this->GetStatus() == IS_INACTIVE) {
             $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
             return;
         }
