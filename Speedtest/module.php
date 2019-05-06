@@ -70,37 +70,37 @@ class Speedtest extends IPSModule
         $s = $this->CheckPrerequisites();
 
         $formElements = [];
-		if ($s == '') {
-			$formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
-			$options = [];
-			$options[] = ['label' => $this->Translate('automatically select'), 'value' => 0];
-			$data = exec('speedtest-cli --list 2>&1', $output, $exitcode);
-			$n = 0;
-			foreach ($output as $line) {
-				if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
-					if ($r[1] > 0) {
-						$options[] = ['label' => $r[2], 'value' => $r[1]];
-						if ($n++ == 100) {
-							break;
-						}
-					}
-				}
-			}
-			$formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
-			$formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
-			$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'List'];
-			$formElements[] = ['type' => 'CheckBox', 'name' => 'no_pre_allocate', 'caption' => 'Set option --no_pre_allocate'];
-			$formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
-			$formElements[] = ['type' => 'NumberSpinner', 'name' => 'update_interval', 'caption' => 'Minutes'];
-		} else {
-			$formElements[] = ['type' => 'Label', 'label' => $s];
-		}
+        if ($s == '') {
+            $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
+            $options = [];
+            $options[] = ['label' => $this->Translate('automatically select'), 'value' => 0];
+            $data = exec('speedtest-cli --list 2>&1', $output, $exitcode);
+            $n = 0;
+            foreach ($output as $line) {
+                if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
+                    if ($r[1] > 0) {
+                        $options[] = ['label' => $r[2], 'value' => $r[1]];
+                        if ($n++ == 100) {
+                            break;
+                        }
+                    }
+                }
+            }
+            $formElements[] = ['type' => 'Select', 'name' => 'preferred_server', 'caption' => 'Preferred server', 'options' => $options];
+            $formElements[] = ['type' => 'Label', 'label' => 'Excluded server (comma-separated)'];
+            $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'exclude_server', 'caption' => 'List'];
+            $formElements[] = ['type' => 'CheckBox', 'name' => 'no_pre_allocate', 'caption' => 'Set option --no_pre_allocate'];
+            $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
+            $formElements[] = ['type' => 'NumberSpinner', 'name' => 'update_interval', 'caption' => 'Minutes'];
+        } else {
+            $formElements[] = ['type' => 'Label', 'label' => $s];
+        }
 
         $formActions = [];
-		if ($s == '') {
-			$formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
-			$formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
-		}
+        if ($s == '') {
+            $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
+            $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
+        }
         $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
         $formActions[] = [
                             'type'    => 'Button',
