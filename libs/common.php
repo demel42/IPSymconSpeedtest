@@ -7,7 +7,7 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
     define('VARIABLETYPE_STRING', 3);
 }
 
-if (!defined('IS_INVALIDCONFIG')) {
+if (!defined('IS_INVALIDPREREQUISITES')) {
     define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
 }
 
