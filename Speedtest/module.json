@@ -9,5 +9,6 @@
 	"parentRequirements": [],
 	"childRequirements": [],
 	"implemented": [],
-	"prefix": "Speedtest"
+	"prefix": "Speedtest",
+	"url": "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md"
 }
