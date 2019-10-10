@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
 
 class Speedtest extends IPSModule
@@ -104,10 +106,10 @@ class Speedtest extends IPSModule
         if (IPS_GetKernelVersion() < 5.2) {
             $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
             $formActions[] = [
-                                'type'    => 'Button',
-                                'caption' => 'Module description',
-                                'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
-                            ];
+                'type'    => 'Button',
+                'caption' => 'Module description',
+                'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
+            ];
         }
 
         $formStatus = [];
