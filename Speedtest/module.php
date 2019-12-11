@@ -81,7 +81,7 @@ class Speedtest extends IPSModule
             foreach ($output as $line) {
                 if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
                     if ($r[1] > 0) {
-                        $options[] = ['label' => $r[2], 'value' => $r[1]];
+                        $options[] = ['label' => $r[2], 'value' => (int) $r[1]];
                         if ($n++ == 100) {
                             break;
                         }

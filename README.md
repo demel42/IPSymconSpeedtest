@@ -1,7 +1,7 @@
 # IPSymconSpeedtest
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.9-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.10-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -96,6 +96,9 @@ GUIDs
   - Speedtest: `{C631E099-15CB-4CF7-9E7C-C55F63912BE5}`
 
 ## 7. Versions-Historie
+
+- 1.10 @ 11.12.2019 08:23<br>
+  - Fix wegen strict_types=1
 
 - 1.9 @ 10.10.2019 17:27<br>
   - Anpassungen an IPS 5.2
