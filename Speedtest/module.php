@@ -67,11 +67,11 @@ class Speedtest extends IPSModule
         $this->SetUpdateInterval();
     }
 
-    public function GetConfigurationForm()
+    protected function GetFormElements()
     {
-        $s = $this->CheckPrerequisites();
-
         $formElements = [];
+
+        $s = $this->CheckPrerequisites();
         if ($s == '') {
             $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
             $options = [];
@@ -98,7 +98,14 @@ class Speedtest extends IPSModule
             $formElements[] = ['type' => 'Label', 'label' => $s];
         }
 
+        return $formElements;
+    }
+
+    protected function GetFormActions()
+    {
         $formActions = [];
+
+        $s = $this->CheckPrerequisites();
         if ($s == '') {
             $formActions[] = ['type' => 'Label', 'label' => 'Updating the data takes up to 1 minute'];
             $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
@@ -112,16 +119,23 @@ class Speedtest extends IPSModule
             ];
         }
 
-        $formStatus = [];
-        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
-        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
-        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
-        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
-        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+        return $formActions;
+    }
 
-        $formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+    public function GetConfigurationForm()
+    {
+        $formElements = $this->GetFormElements();
+        $formActions = $this->GetFormActions();
+        $formStatus = $this->GetFormStatus();
 
-        return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
+        $form = json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
+        if ($form == '') {
+            $this->SendDebug(__FUNCTION__, 'json_error=' . json_last_error_msg(), 0);
+            $this->SendDebug(__FUNCTION__, '=> formElements=' . print_r($formElements, true), 0);
+            $this->SendDebug(__FUNCTION__, '=> formActions=' . print_r($formActions, true), 0);
+            $this->SendDebug(__FUNCTION__, '=> formStatus=' . print_r($formStatus, true), 0);
+        }
+        return $form;
     }
 
     protected function SetUpdateInterval()
@@ -249,9 +263,15 @@ class Speedtest extends IPSModule
             $this->SetValue('Ping', $ping);
             $this->SetValue('Upload', $upload);
             $this->SetValue('Download', $download);
+            $this->SetStatus(IS_ACTIVE);
         } else {
             $msg = 'failed: exitcode=' . $exitcode . ', err=' . $err;
             $this->LogMessage(__CLASS__ . '::' . __FUNCTION__ . ': ' . $msg, KL_WARNING);
+            if (preg_match('/ERROR: No matched servers/', $err)) {
+                $this->SetStatus(IS_UNKNOWNSERVER);
+            } else {
+                $this->SetStatus(IS_SERVICEFAILURE);
+            }
             $this->SendDebug(__FUNCTION__, $msg, 0);
         }
 

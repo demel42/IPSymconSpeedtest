@@ -35,7 +35,9 @@
 			"Instance is inactive": "Instanz ist inaktiv",
 			"Instance is not created": "Instanz wurde nicht erzeugt",
 
-			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)"
+			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)",
+			"Instance is inactive (service failure)": "Instanz ist inaktiv (Service nicht verfügbar)",
+			"Instance is inactive (unknown server)": "Instanz ist inaktiv (unbekannter Server)"
 		}
 	}
 }

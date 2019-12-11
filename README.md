@@ -99,6 +99,7 @@ GUIDs
 
 - 1.10 @ 11.12.2019 08:23<br>
   - Fix wegen strict_types=1
+  - Modul-Stati für "unbekannter Server" und "Service nicht verfügbar"
 
 - 1.9 @ 10.10.2019 17:27<br>
   - Anpassungen an IPS 5.2

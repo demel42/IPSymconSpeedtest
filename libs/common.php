@@ -11,6 +11,8 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
 
 if (!defined('IS_INVALIDPREREQUISITES')) {
     define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
+    define('IS_SERVICEFAILURE', IS_EBASE + 2);
+    define('IS_UNKNOWNSERVER', IS_EBASE + 3);
 }
 
 trait SpeedtestCommon
@@ -63,7 +65,6 @@ trait SpeedtestCommon
         }
     }
 
-    // Inspired from module SymconTest/HookServe
     private function RegisterHook($WebHook)
     {
         $ids = IPS_GetInstanceListByModuleID('{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}');
@@ -87,7 +88,6 @@ trait SpeedtestCommon
         }
     }
 
-    // Inspired from module SymconTest/HookServe
     private function GetMimeType($extension)
     {
         $lines = file(IPS_GetKernelDirEx() . 'mime.types');
@@ -107,7 +107,32 @@ trait SpeedtestCommon
 
     private function GetArrayElem($data, $var, $dflt)
     {
-        return isset($data[$var]) ? $data[$var] : $dflt;
+        $ret = $data;
+        $vs = explode('.', $var);
+        foreach ($vs as $v) {
+            if (!isset($ret[$v])) {
+                $ret = $dflt;
+                break;
+            }
+            $ret = $ret[$v];
+        }
+        return $ret;
+    }
+
+    private function GetFormStatus()
+    {
+        $formStatus = [];
+        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
+        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
+        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
+        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
+        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+
+        $formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+        $formStatus[] = ['code' => IS_SERVICEFAILURE, 'icon' => 'error', 'caption' => 'Instance is inactive (service failure)'];
+        $formStatus[] = ['code' => IS_UNKNOWNSERVER, 'icon' => 'error', 'caption' => 'Instance is inactive (unknown server)'];
+
+        return $formStatus;
     }
 
     protected function GetStatus()
@@ -118,5 +143,20 @@ trait SpeedtestCommon
 
         $inst = IPS_GetInstance($this->InstanceID);
         return $inst['InstanceStatus'];
+    }
+
+    private function GetStatusText()
+    {
+        $txt = false;
+        $status = $this->GetStatus();
+        $formStatus = $this->GetFormStatus();
+        foreach ($formStatus as $item) {
+            if ($item['code'] == $status) {
+                $txt = $item['caption'];
+                break;
+            }
+        }
+
+        return $txt;
     }
 }
