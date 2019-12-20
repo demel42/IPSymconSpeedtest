@@ -1,7 +1,7 @@
 # IPSymconSpeedtest
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.10-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.11-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -97,45 +97,49 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.10 @ 11.12.2019 08:23<br>
+- 1.11 @ 20.12.2019 13:54
+  - Anpassungen an IPS 5.3
+    - Formular-Elemente: 'label' in 'caption' geändert
+
+- 1.10 @ 11.12.2019 08:23
   - Fix wegen strict_types=1
   - Modul-Stati für "unbekannter Server" und "Service nicht verfügbar"
 
-- 1.9 @ 10.10.2019 17:27<br>
+- 1.9 @ 10.10.2019 17:27
   - Anpassungen an IPS 5.2
     - IPS_SetVariableProfileValues(), IPS_SetVariableProfileDigits() nur bei INTEGER, FLOAT
     - Dokumentation-URL in module.json
   - Umstellung auf strict_types=1
   - Umstellung von StyleCI auf php-cs-fixer
 
-- 1.8 @ 09.08.2019 14:32<br>
+- 1.8 @ 09.08.2019 14:32
   - Schreibfehler korrigiert
 
-- 1.7 @ 06.05.2019 15:32<br>
+- 1.7 @ 06.05.2019 15:32
   - Konfigurationsdialog ist reduziert, wenn Systemvoraussetzungen fehlen
 
-- 1.6 @ 03.05.2019 16:40<br>
+- 1.6 @ 03.05.2019 16:40
   - Prüfung der Systemvoraussetzungen im Konfigurationsdialog
 
-- 1.5 @ 29.03.2019 16:19<br>
+- 1.5 @ 29.03.2019 16:19
   - SetValue() abgesichert
 
-- 1.4 @ 22.03.2019 09:50<br>
+- 1.4 @ 22.03.2019 09:50
   - Schalter, um ein Modul (temporär) zu deaktivieren
   - Konfigurations-Element IntervalBox -> NumberSpinner
   - Anpassung IPS 5
 
-- 1.3 @ 22.10.2018 10:55<br>
+- 1.3 @ 22.10.2018 10:55
   - Abspaltung Branch _ips_4.4_
   - Fix im Formular (_Akulisiere Daten_ fehlte)
 
-- 1.2 @ 06.09.2018 18:59<br>
+- 1.2 @ 06.09.2018 18:59
   - Versionshistorie dazu,
   - define's der Variablentypen,
   - Schaltfläche mit Link zu README.md im Konfigurationsdialog
 
-- 1.1 @ 14.08.2018 16:51<br>
+- 1.1 @ 14.08.2018 16:51
   - Option '--no-pre-allocate'
 
-- 1.0 @ 28.07.2018<br>
-  Initiale Version
+- 1.0 @ 28.07.2018
+  - Initiale Version
