@@ -135,16 +135,6 @@ trait SpeedtestCommon
         return $formStatus;
     }
 
-    protected function GetStatus()
-    {
-        if (IPS_GetKernelVersion() >= 5.1) {
-            return parent::GetStatus();
-        }
-
-        $inst = IPS_GetInstance($this->InstanceID);
-        return $inst['InstanceStatus'];
-    }
-
     private function GetStatusText()
     {
         $txt = false;

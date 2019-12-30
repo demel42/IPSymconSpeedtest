@@ -110,14 +110,6 @@ class Speedtest extends IPSModule
             $formActions[] = ['type' => 'Label', 'caption' => 'Updating the data takes up to 1 minute'];
             $formActions[] = ['type' => 'Button', 'caption' => 'Update data', 'onClick' => 'Speedtest_UpdateData($id);'];
         }
-        if (IPS_GetKernelVersion() < 5.2) {
-            $formActions[] = ['type' => 'Label', 'caption' => '____________________________________________________________________________________________________'];
-            $formActions[] = [
-                'type'    => 'Button',
-                'caption' => 'Module description',
-                'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
-            ];
-        }
 
         return $formActions;
     }
