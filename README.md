@@ -97,9 +97,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.11 @ 30.12.2019 10:56
+- 1.11 @ 01.01.2020 18:52
   - Anpassungen an IPS 5.3
     - Formular-Elemente: 'label' in 'caption' geändert
+  - Schreibfehler korrigiert
 
 - 1.10 @ 11.12.2019 08:23
   - Fix wegen strict_types=1
