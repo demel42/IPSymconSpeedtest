@@ -2,20 +2,7 @@
 
 declare(strict_types=1);
 
-if (!defined('VARIABLETYPE_BOOLEAN')) {
-    define('VARIABLETYPE_BOOLEAN', 0);
-    define('VARIABLETYPE_INTEGER', 1);
-    define('VARIABLETYPE_FLOAT', 2);
-    define('VARIABLETYPE_STRING', 3);
-}
-
-if (!defined('IS_INVALIDPREREQUISITES')) {
-    define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
-    define('IS_SERVICEFAILURE', IS_EBASE + 2);
-    define('IS_UNKNOWNSERVER', IS_EBASE + 3);
-}
-
-trait SpeedtestCommon
+trait SpeedtestCommonLib
 {
     protected function SetValue($Ident, $Value)
     {
@@ -117,22 +104,6 @@ trait SpeedtestCommon
             $ret = $ret[$v];
         }
         return $ret;
-    }
-
-    private function GetFormStatus()
-    {
-        $formStatus = [];
-        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
-        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
-        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
-        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
-        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
-
-        $formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
-        $formStatus[] = ['code' => IS_SERVICEFAILURE, 'icon' => 'error', 'caption' => 'Instance is inactive (service failure)'];
-        $formStatus[] = ['code' => IS_UNKNOWNSERVER, 'icon' => 'error', 'caption' => 'Instance is inactive (unknown server)'];
-
-        return $formStatus;
     }
 
     private function GetStatusText()
