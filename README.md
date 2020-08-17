@@ -29,6 +29,8 @@ _Speedtest_ von _Ookla_ (https://www.speedtest.net) bietet ein Tool zu Ermittlun
 
 ### a. Betriebssystem vorbereiten
 
+### Standardversion speedtest-cli
+
 #### Linux (Raspbian u.a.) 
 
 `sudo apt-get install python-pip`<br>
@@ -37,6 +39,11 @@ _Speedtest_ von _Ookla_ (https://www.speedtest.net) bietet ein Tool zu Ermittlun
 #### andere Betriebssysteme
 
 Suche nach __speedtest-cli installieren__ im Internet bringt z.B. diese Seite: https://www.howtogeek.com/179016/how-to-test-your-internet-speed-from-the-command-line/
+
+### Original Speedtest von Ookla
+
+Bei hohen Bandbreiten ist u.U. die Angabe vom Standard _speedtest-cli_ viel zu gering - unabhängig von der verfügbaren Rechnerleistung. Es gibt von Ookla eine eigene Version von des speedtest: https://www.speedtest.net/de/apps/cli.
+DIe Installation für die wichtgsten Betriebssysteme sind hier erklärt.
 
 ### b. Laden des Moduls
 
@@ -73,17 +80,21 @@ Wichtiger Hinweis: wesentlich für den Test ist eine ausreichenden LAN-Leistung 
 | Instanz ist deaktiviert         | boolean | false        | Instanz temporär deaktivieren |
 |                                 |         |              | |
 | Bevorzugter Server              | integer |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
+|                                 |         |              | |
+| - nur bei speedtest-cli -       |         |              | |
 | zu ignorierende Server          | string  |              | Komma-separierte Liste von Server-ID's, die bei der automatischen Auswahl ignoriert werden sollen |
 | Option --no-pre-allocate setzen | boolean |              | Die Option dient zur Vermeinung von Engpässen auf Systemen mit wenig Hauptspeicher |
 |                                 |         |              | |
+| Programmpfad                    | string  |              | der absolute vollständige Programmpfad, nur erforderlich bei irregulärer Installation des Testprogramms |
+|                                 |         |              | |
 | Aktualisiere Daten ...          | integer | 60           | Aktualisierungsintervall, Angabe in Minuten |
 
-Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list`.<br>
+Dіe Gesamtliste der Server erhält man mittels Shell-Kommand `speedtest-cli --list` resp. `speedtest --servers`<br>
 
 I.d.R ist die automatische Ermittlung der Servers völlig ausreichend. Manchmal ist es aber so, das ein Server bei guter Erreichbarkeit einen zu geringen Durchsatz bietet; dann sollte man diesen Server ignorieren.
 
 Wenn das Updateintervall auf **0** steht, wird kein automatischer Test durchgeführt. Man kann die Funktion _Speedtest_PerformTest_ dann in einem Script zu festgelegten Zeiten durchführen.
-Hinweis: ein Test dauert bis zu einer Minute, währenddessen wird die Bandbreite des Internetzugangs vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
+Hinweis: ein Test dauert bis zu einer Minute, währenddessen wird die Bandbreite des Internetzugangs unter Umständen vollständig ausgenutzt. Daher empfiehlt sich, die Tests nicht zu häufig zu machen.
 
 
 ## 6. Anhang
@@ -96,11 +107,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.12 @ 23.07.2020 15:45 (beta)
+- 2.0 @ 17.08.2020 18:35 (beta)
   - LICENSE.md hinzugefügt
   - intere Funktionen sind nun "private"
   - define's durch statische Klassen-Variablen ersetzt
   - lokale Funktionen aus common.php in locale.php verlagert
+  - "Original Speedtest von Ookla" als alternative testprogramm hinzugefügt
 
 - 1.11 @ 01.01.2020 18:52
   - Anpassungen an IPS 5.3

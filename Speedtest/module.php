@@ -10,6 +10,9 @@ class Speedtest extends IPSModule
     use SpeedtestCommonLib;
     use SpeedtestLocalLib;
 
+    public static $Mode_SpeedtestCli = 0;
+    public static $Mode_Ookla = 1;
+
     public function Create()
     {
         parent::Create();
@@ -19,7 +22,11 @@ class Speedtest extends IPSModule
         $this->RegisterPropertyInteger('update_interval', '0');
         $this->RegisterPropertyInteger('preferred_server', '0');
         $this->RegisterPropertyString('exclude_server', '');
+
+        $this->RegisterPropertyInteger('program_version', 0);
         $this->RegisterPropertyBoolean('no_pre_allocate', true);
+
+        $this->RegisterPropertyString('full_path', '');
 
         $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
 
@@ -31,9 +38,26 @@ class Speedtest extends IPSModule
     {
         $s = '';
 
-        $data = exec('speedtest-cli --version 2>&1', $output, $exitcode);
+        $version = $this->ReadPropertyInteger('program_version');
+        $path = $this->ReadPropertyString('full_path');
+        switch ($version) {
+            case self::$Mode_Ookla:
+                $cmd = $path != '' ? $path : 'speedtest';
+                $cmd .= ' --version';
+                $prog = 'speedtest';
+                break;
+            case self::$Mode_SpeedtestCli:
+                $cmd = $path != '' ? $path : 'speedtest-cli';
+                $cmd = 'speedtest-cli --version';
+                $prog = 'speedtest-cli';
+                break;
+            default:
+                $this->Translate('no valid program version selected');
+                break;
+        }
+        $data = exec($cmd . ' 2>&1', $output, $exitcode);
         if ($exitcode != 0) {
-            $s = $this->Translate('The following system prerequisites are missing') . ': speedtest-cli';
+            $s = $this->Translate('The following system prerequisites are missing') . ': ' . $prog;
         }
 
         return $s;
@@ -77,7 +101,8 @@ class Speedtest extends IPSModule
         if ($s != '') {
             $formElements[] = [
                 'type'    => 'Label',
-                'caption' => $s];
+                'caption' => $s
+            ];
         }
 
         $formElements[] = [
@@ -85,47 +110,112 @@ class Speedtest extends IPSModule
             'name'    => 'module_disable',
             'caption' => 'Instance is disabled'
         ];
+
+        $formElements[] = [
+            'type'    => 'Select',
+            'name'    => 'program_version',
+            'caption' => 'Program version',
+            'options' => [
+                [
+                    'caption' => $this->Translate('Default version of speedtest-cli'),
+                    'value'   => self::$Mode_SpeedtestCli,
+                ],
+                [
+                    'caption' => $this->Translate('Original speedtest from Ookla'),
+                    'value'   => self::$Mode_Ookla,
+                ],
+            ]
+        ];
+
         $options = [];
         $options[] = [
             'caption' => $this->Translate('automatically select'),
-            'value'   => 0];
-        $data = exec('speedtest-cli --list 2>&1',
-$output,
-$exitcode);
-        $n = 0;
-        foreach ($output as $line) {
-            if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/',
-$line,
-$r)) {
-                if ($r[1] > 0) {
-                    $options[] = [
-                        'caption' => $r[2],
-                        'value'   => (int) $r[1]];
-                    if ($n++ == 100) {
-                        break;
+            'value'   => 0
+        ];
+        $path = $this->ReadPropertyString('full_path');
+        $version = $this->ReadPropertyInteger('program_version');
+        switch ($version) {
+            case self::$Mode_SpeedtestCli:
+                $cmd = $path != '' ? $path : 'speedtest-cli';
+                $cmd .= ' --list';
+                $data = exec($cmd . ' 2>&1', $output, $exitcode);
+                $n = 0;
+                foreach ($output as $line) {
+                    if (preg_match('/[ ]*([0-9]*)\)\s([^[]*)/', $line, $r)) {
+                        if ($r[1] > 0) {
+                            $options[] = [
+                                'caption' => $r[2],
+                                'value'   => (int) $r[1]
+                            ];
+                            if ($n++ == 100) {
+                                break;
+                            }
+                        }
                     }
                 }
-            }
+                break;
+            case self::$Mode_Ookla:
+                $cmd = $path != '' ? $path : 'speedtest';
+                $cmd .= ' --servers';
+                $data = exec($cmd . ' 2>&1', $output, $exitcode);
+                $n = 0;
+                foreach ($output as $line) {
+                    if ($n++ < 4) {
+                        continue;
+                    }
+                    if (preg_match('/[ ]*([0-9]*)\s([^[]*)/', $line, $r)) {
+                        if ($r[1] > 0) {
+                            $options[] = [
+                                'caption' => $r[2],
+                                'value'   => (int) $r[1]
+                            ];
+                        }
+                    }
+                }
+                break;
         }
+
         $formElements[] = [
             'type'    => 'Select',
             'name'    => 'preferred_server',
             'caption' => 'Preferred server',
-            'options' => $options];
-        $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Excluded server (comma-separated)'
+            'options' => $options
         ];
+
+        if ($version == self::$Mode_SpeedtestCli) {
+            $formElements[] = [
+                'type'    => 'Label',
+                'caption' => 'Excluded server (comma-separated)'
+            ];
+            $formElements[] = [
+                'type'    => 'ValidationTextBox',
+                'name'    => 'exclude_server',
+                'caption' => 'List'
+            ];
+            $formElements[] = [
+                'type'    => 'CheckBox',
+                'name'    => 'no_pre_allocate',
+                'caption' => 'Set option --no_pre_allocate'
+            ];
+        }
+
         $formElements[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'exclude_server',
-            'caption' => 'List'
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Expert area',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'    => 'Label',
+                    'caption' => 'Full qualified path to testprogram, only needed if irregular installed',
+                ],
+                [
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'full_path',
+                    'caption' => 'Program path'
+                ]
+            ]
         ];
-        $formElements[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'no_pre_allocate',
-            'caption' => 'Set option --no_pre_allocate'
-        ];
+
         $formElements[] = [
             'type'    => 'Label',
             'caption' => 'Update data every X minutes'
@@ -194,41 +284,54 @@ $r)) {
             return;
         }
 
-        $cmd = 'speedtest-cli --json';
+        $path = $this->ReadPropertyString('full_path');
+        $version = $this->ReadPropertyInteger('program_version');
+        switch ($version) {
+            case self::$Mode_SpeedtestCli:
+                $cmd = $path != '' ? $path : 'speedtest-cli';
+                $cmd .= ' --json';
 
-        // use https instead of http
-        // $cmd .= ' --secure';
+                // use https instead of http
+                // $cmd .= ' --secure';
 
-        // Do not pre allocate upload data. Pre allocation is
-        // enabled by default to improve upload performance. To
-        // support systems with insufficient memory, use this
-        // option to avoid a MemoryError
-        $no_pre_allocate = $this->ReadPropertyBoolean('no_pre_allocate');
-        if ($no_pre_allocate) {
-            $cmd .= ' --no-pre-allocate';
+                // Do not pre allocate upload data. Pre allocation is
+                // enabled by default to improve upload performance. To
+                // support systems with insufficient memory, use this
+                // option to avoid a MemoryError
+                $no_pre_allocate = $this->ReadPropertyBoolean('no_pre_allocate');
+                if ($no_pre_allocate) {
+                    $cmd .= ' --no-pre-allocate';
+                }
+
+                // Specify a server ID to test against. Can be supplied
+                // multiple times
+                if ($preferred_server > 0) {
+                    $cmd .= ' --server=' . $preferred_server;
+                }
+
+                // Exclude a server from selection. Can be supplied
+                // multiple times
+                if ($exclude_server != '') {
+                    $serverV = explode(',', $exclude_server);
+                    foreach ($serverV as $server) {
+                        $cmd .= ' --exclude=' . $server;
+                    }
+                }
+                break;
+            case self::$Mode_Ookla:
+                $cmd = $path != '' ? $path : 'speedtest';
+                $cmd .= ' --format=json';
+
+                // Specify a server ID to test against.
+                if ($preferred_server > 0) {
+                    $cmd .= ' --server-id=' . $preferred_server;
+                }
         }
-
-        // Specify a server ID to test against. Can be supplied
-        // multiple times
-        if ($preferred_server > 0) {
-            $cmd .= ' --server=' . $preferred_server;
-        }
-
-        // Exclude a server from selection. Can be supplied
-        // multiple times
-        if ($exclude_server != '') {
-            $serverV = explode(',', $exclude_server);
-            foreach ($serverV as $server) {
-                $cmd .= ' --exclude=' . $server;
-            }
-        }
-
-        $cmd .= ' 2>&1';
 
         $this->SendDebug(__FUNCTION__, 'cmd="' . $cmd . '"', 0);
 
         $time_start = microtime(true);
-        $data = exec($cmd, $output, $exitcode);
+        $data = exec($cmd . ' 2>&1', $output, $exitcode);
         $duration = floor((microtime(true) - $time_start) * 100) / 100;
 
         if ($exitcode) {
@@ -239,9 +342,23 @@ $r)) {
             $err = '';
         }
 
-        if (preg_match('/speedtest-cli: error:\s(.*?)$/', $data, $r)) {
-            $err = $r[1];
-            $ok = false;
+        switch ($version) {
+            case self::$Mode_SpeedtestCli:
+                if (preg_match('/speedtest-cli: error:\s(.*?)$/', $data, $r)) {
+                    $err = $r[1];
+                    $ok = false;
+                }
+                if (preg_match('/^ERROR:\s(.*?)$/', $data, $r)) {
+                    $err = $r[1];
+                    $ok = false;
+                }
+                break;
+            case self::$Mode_Ookla:
+                if (preg_match('/^\[error\]\s(.*?)$/', $data, $r)) {
+                    $err = $r[1];
+                    $ok = false;
+                }
+                break;
         }
 
         $this->SendDebug(__FUNCTION__, 'duration=' . $duration . ', exitcode=' . $exitcode . ', status=' . ($ok ? 'ok' : 'fail') . ', err=' . $err, 0);
@@ -262,28 +379,57 @@ $r)) {
                 $err = 'malformed data';
             } else {
                 $this->SendDebug(__FUNCTION__, 'jdata=' . print_r($jdata, true), 0);
-                if (isset($jdata['client']['isp'])) {
-                    $isp = $jdata['client']['isp'];
-                }
-                if (isset($jdata['client']['ip'])) {
-                    $ip = $jdata['client']['ip'];
-                }
-                if (isset($jdata['server']['sponsor'])) {
-                    $sponsor = $jdata['server']['sponsor'];
-                }
-                if (isset($jdata['server']['id'])) {
-                    $id = $jdata['server']['id'];
-                }
-                if (isset($jdata['ping'])) {
-                    $ping = $jdata['ping'];
-                }
-                if (isset($jdata['download'])) {
-                    // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
-                    $download = floor($jdata['download'] / (1024 * 1024) * 10000) / 10000;
-                }
-                if (isset($jdata['upload'])) {
-                    // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
-                    $upload = floor($jdata['upload'] / (1024 * 1024) * 10000) / 10000;
+                switch ($version) {
+                    case self::$Mode_SpeedtestCli:
+                        if (isset($jdata['client']['isp'])) {
+                            $isp = $jdata['client']['isp'];
+                        }
+                        if (isset($jdata['client']['ip'])) {
+                            $ip = $jdata['client']['ip'];
+                        }
+                        if (isset($jdata['server']['sponsor'])) {
+                            $sponsor = $jdata['server']['sponsor'];
+                        }
+                        if (isset($jdata['server']['id'])) {
+                            $id = $jdata['server']['id'];
+                        }
+                        if (isset($jdata['ping'])) {
+                            $ping = $jdata['ping'];
+                        }
+                        if (isset($jdata['download'])) {
+                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                            $download = floor($jdata['download'] / (1024 * 1024) * 10000) / 10000;
+                        }
+                        if (isset($jdata['upload'])) {
+                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                            $upload = floor($jdata['upload'] / (1024 * 1024) * 10000) / 10000;
+                        }
+                        break;
+                    case self::$Mode_Ookla:
+                        if (isset($jdata['isp'])) {
+                            $isp = $jdata['isp'];
+                        }
+                        if (isset($jdata['interface']['externalIp'])) {
+                            $ip = $jdata['interface']['externalIp'];
+                        }
+                        if (isset($jdata['server']['name'])) {
+                            $sponsor = $jdata['server']['name'];
+                        }
+                        if (isset($jdata['server']['id'])) {
+                            $id = $jdata['server']['id'];
+                        }
+                        if (isset($jdata['ping']['latency'])) {
+                            $ping = $jdata['ping']['latency'];
+                        }
+                        if (isset($jdata['download']['bandwidth'])) {
+                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                            $download = floor(floatval($jdata['download']['bandwidth']) * 8.0 / 10000) / 100;
+                        }
+                        if (isset($jdata['upload']['bandwidth'])) {
+                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
+                            $upload = floor(floatval($jdata['upload']['bandwidth']) * 8.0 / 10000) / 100;
+                        }
+                        break;
                 }
                 $this->SendDebug(__FUNCTION__, ' ... isp=' . $isp . ', ip=' . $ip . ', sponsor=' . $sponsor . ', id=' . $id . ', ping=' . $ping . ', download=' . $download . ', upload=' . $upload, 0);
             }

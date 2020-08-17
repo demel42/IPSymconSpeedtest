@@ -4,20 +4,29 @@
 			"Instance is disabled": "Instanz ist deaktiviert",
 			"Instance is inactive": "Instanz ist inaktiv",
 
-			"automatically select" : "automatische Auswahl",
+			"Program version": "Programmversion",
+			"Default version of speedtest-cli": "Standardversion von speedtest-cli",
+			"Original speedtest from Ookla": "Original speedtest von Ookla",
+
+			"no valid program version selected": "kein gültige Programmversion ausgewählt",
+
 			"Preferred server": "bevorzugter Server",
+			"automatically select" : "automatische Auswahl",
 
 			"Excluded server (comma-separated)": "Auszuschliessende Server (Komma-separiert)",
 			"List": "Liste",
 			"Set option --no_pre_allocate" : "Option --no_pre_allocate setzen",
+
+			"Expert area": "Expertenbereich",
+			"Full qualified path to testprogram, only needed if irregular installed":
+				"Vollständiger Pfad zum Testprogramm, wird nur bei irregulärer Installation benötigt",
+			"Program path": "Programmpfad",
 
 			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
 			"Minutes": "Minuten",
 
 			"Updating the data takes up to 1 minute": "Die Aktualisierung dauert bis zu einer Minute",
 			"Update data": "Aktualisiere Daten",
-
-			"Module description": "Modulbeschreibung",
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 
