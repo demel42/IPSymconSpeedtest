@@ -112,7 +112,7 @@ GUIDs
   - intere Funktionen sind nun "private"
   - define's durch statische Klassen-Variablen ersetzt
   - lokale Funktionen aus common.php in locale.php verlagert
-  - "Original Speedtest von Ookla" als alternative testprogramm hinzugefügt
+  - "Original Speedtest von Ookla" als alternatives Testprogramm hinzugefügt
 
 - 1.11 @ 01.01.2020 18:52
   - Anpassungen an IPS 5.3
