@@ -8,6 +8,10 @@ trait SpeedtestLocalLib
     public static $IS_SERVICEFAILURE = IS_EBASE + 2;
     public static $IS_UNKNOWNSERVER = IS_EBASE + 3;
 
+    public static $STATUS_INVALID = 0;
+    public static $STATUS_VALID = 1;
+    public static $STATUS_RETRYABLE = 2;
+
     private function GetFormStatus()
     {
         $formStatus = [];
@@ -23,5 +27,19 @@ trait SpeedtestLocalLib
         $formStatus[] = ['code' => self::$IS_UNKNOWNSERVER, 'icon' => 'error', 'caption' => 'Instance is inactive (unknown server)'];
 
         return $formStatus;
+    }
+
+    private function CheckStatus()
+    {
+        switch ($this->GetStatus()) {
+            case IS_ACTIVE:
+                $class = self::$STATUS_VALID;
+                break;
+            default:
+                $class = self::$STATUS_INVALID;
+                break;
+        }
+
+        return $class;
     }
 }
