@@ -28,6 +28,8 @@ class Speedtest extends IPSModule
 
         $this->RegisterPropertyString('full_path', '');
 
+        $this->RegisterPropertyBoolean('with_logging', false);
+
         $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
 
         $this->CreateVarProfile('Speedtest.ms', VARIABLETYPE_FLOAT, ' ms', 0, 0, 0, 0, '');
@@ -436,7 +438,10 @@ class Speedtest extends IPSModule
         }
 
         if ($ok) {
-            IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
+            $with_logging = $this->ReadPropertyBoolean('with_logging');
+            if ($with_logging) {
+                IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
+            }
             $this->SetValue('ISP', $isp);
             $this->SetValue('IP', $ip);
             $this->SetValue('Server', $sponsor);

@@ -107,12 +107,13 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.0 @ 26.08.2020 10:28 (beta)
+- 2.0 @ 30.08.2020 12:33 (beta)
   - LICENSE.md hinzugefügt
   - intere Funktionen sind nun "private"
   - define's durch statische Klassen-Variablen ersetzt
   - lokale Funktionen aus common.php in locale.php verlagert
   - "Original Speedtest von Ookla" als alternatives Testprogramm hinzugefügt
+  - Protokollierung einer erfolgreichen Messung in den Meldungen entfernt
 
 - 1.11 @ 01.01.2020 18:52
   - Anpassungen an IPS 5.3
