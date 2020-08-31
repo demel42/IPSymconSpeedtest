@@ -50,14 +50,16 @@ class Speedtest extends IPSModule
                 break;
             case self::$Mode_SpeedtestCli:
                 $cmd = $path != '' ? $path : 'speedtest-cli';
-                $cmd = 'speedtest-cli --version';
+                $cmd .= ' --version';
                 $prog = 'speedtest-cli';
                 break;
             default:
-                $this->Translate('no valid program version selected');
-                break;
+                $s = $this->Translate('no valid program version selected');
+                return $s;
         }
+        $this->SendDebug(__FUNCTION__, 'version=' . $version . ' prog=' . $prog . ', cmd=' . $cmd, 0);
         $data = exec($cmd . ' 2>&1', $output, $exitcode);
+        $this->SendDebug(__FUNCTION__, 'exitcode=' . $exitcode . ' data=' . $data . ', output=' . print_r($output, true), 0);
         if ($exitcode != 0) {
             $s = $this->Translate('The following system prerequisites are missing') . ': ' . $prog;
         }
