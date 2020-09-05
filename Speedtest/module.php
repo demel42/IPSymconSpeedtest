@@ -54,8 +54,8 @@ class Speedtest extends IPSModule
                 $prog = 'speedtest-cli';
                 break;
             default:
-                $this->Translate('no valid program version selected');
-                break;
+                $s = $this->Translate('no valid program version selected');
+                return $s;
         }
         $data = exec($cmd . ' 2>&1', $output, $exitcode);
         $this->SendDebug(__FUNCTION__, 'cmd=' . $cmd . ', exitcode=' . $exitcode . ', output=' . print_r($output, true), 0);
