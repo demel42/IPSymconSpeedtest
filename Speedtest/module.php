@@ -45,12 +45,12 @@ class Speedtest extends IPSModule
         switch ($version) {
             case self::$Mode_Ookla:
                 $cmd = $path != '' ? $path : 'speedtest';
-                $cmd .= ' --version';
+                $cmd .= ' --version --accept-license --accept-gdpr';
                 $prog = 'speedtest';
                 break;
             case self::$Mode_SpeedtestCli:
                 $cmd = $path != '' ? $path : 'speedtest-cli';
-                $cmd = 'speedtest-cli --version';
+                $cmd .= ' --version';
                 $prog = 'speedtest-cli';
                 break;
             default:
@@ -58,6 +58,7 @@ class Speedtest extends IPSModule
                 break;
         }
         $data = exec($cmd . ' 2>&1', $output, $exitcode);
+        $this->SendDebug(__FUNCTION__, 'cmd=' . $cmd . ', exitcode=' . $exitcode . ', output=' . print_r($output, true), 0);
         if ($exitcode != 0) {
             $s = $this->Translate('The following system prerequisites are missing') . ': ' . $prog;
         }
