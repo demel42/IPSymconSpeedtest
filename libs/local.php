@@ -35,6 +35,10 @@ trait SpeedtestLocalLib
             case IS_ACTIVE:
                 $class = self::$STATUS_VALID;
                 break;
+            case self::$IS_SERVICEFAILURE:
+            case self::$IS_UNKNOWNSERVER:
+                $class = self::$STATUS_RETRYABLE;
+                break;
             default:
                 $class = self::$STATUS_INVALID;
                 break;
