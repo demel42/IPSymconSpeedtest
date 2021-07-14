@@ -107,8 +107,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.1 @ 18.12.2020 14:57 (beta)
+- 2.1 @ 14.07.2021 18:21
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
+  - Schalter "Instanz ist deaktiviert" umbenannt in "Instanz deaktivieren"
 
 - 2.0 @ 05.09.2020 10:43
   - LICENSE.md hinzugefügt
