@@ -77,7 +77,7 @@ Wichtiger Hinweis: wesentlich für den Test ist eine ausreichenden LAN-Leistung 
 
 | Eigenschaft                     | Typ     | Standardwert | Beschreibung |
 | :------------------------------ | :------ | :----------- | :----------- |
-| Instanz ist deaktiviert         | boolean | false        | Instanz temporär deaktivieren |
+| Instanz deaktivieren            | boolean | false        | Instanz temporär deaktivieren |
 |                                 |         |              | |
 | Bevorzugter Server              | integer |              | Angabe eines spezischen Servers anstellen der automatischen Auswahl (nach Ping-Zeit) |
 |                                 |         |              | |
