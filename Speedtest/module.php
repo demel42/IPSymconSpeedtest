@@ -441,7 +441,8 @@ class Speedtest extends IPSModule
         if ($ok) {
             $with_logging = $this->ReadPropertyBoolean('with_logging');
             if ($with_logging) {
-                IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'server=' . $id . ') ' . $sponsor . ', duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail'));
+                $s = 'server=' . $id . '(' . $sponsor . '), duration=' . $duration . ', status=' . ($ok ? 'ok' : 'fail');
+                $this->LogMessage($s, KL_MESSAGE);
             }
             $this->SetValue('ISP', $isp);
             $this->SetValue('IP', $ip);

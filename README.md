@@ -107,6 +107,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.2 @ 13.08.2021 17:36
+  - Anpassungen für IPS 6
+    - IPS_LogMessage(...) ersetzt durch $this->LogMessage(..., KL_MESSAGE);
+
 - 2.1 @ 14.07.2021 18:21
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
   - Schalter "Instanz ist deaktiviert" umbenannt in "Instanz deaktivieren"
