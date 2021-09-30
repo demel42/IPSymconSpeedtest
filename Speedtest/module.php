@@ -45,7 +45,7 @@ class Speedtest extends IPSModule
         switch ($version) {
             case self::$Mode_Ookla:
                 $cmd = $path != '' ? $path : 'speedtest';
-                $cmd .= ' --version --accept-license --accept-gdpr';
+                $cmd .= ' --version';
                 $prog = 'speedtest';
                 break;
             case self::$Mode_SpeedtestCli:
@@ -323,7 +323,7 @@ class Speedtest extends IPSModule
                 break;
             case self::$Mode_Ookla:
                 $cmd = $path != '' ? $path : 'speedtest';
-                $cmd .= ' --format=json';
+                $cmd .= ' --json';
 
                 // Specify a server ID to test against.
                 if ($preferred_server > 0) {
@@ -409,11 +409,11 @@ class Speedtest extends IPSModule
                         }
                         break;
                     case self::$Mode_Ookla:
-                        if (isset($jdata['isp'])) {
-                            $isp = $jdata['isp'];
+                        if (isset($jdata['client']['isp'])) {
+                            $isp = $jdata['client']['isp'];
                         }
-                        if (isset($jdata['interface']['externalIp'])) {
-                            $ip = $jdata['interface']['externalIp'];
+                        if (isset($jdata['client']['ip'])) {
+                            $ip = $jdata['client']['ip'];
                         }
                         if (isset($jdata['server']['name'])) {
                             $sponsor = $jdata['server']['name'];
@@ -421,16 +421,16 @@ class Speedtest extends IPSModule
                         if (isset($jdata['server']['id'])) {
                             $id = $jdata['server']['id'];
                         }
-                        if (isset($jdata['ping']['latency'])) {
-                            $ping = $jdata['ping']['latency'];
+                        if (isset($jdata['ping'])) {
+                            $ping = $jdata['ping'];
                         }
-                        if (isset($jdata['download']['bandwidth'])) {
-                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
-                            $download = floor(floatval($jdata['download']['bandwidth']) * 8.0 / 10000) / 100;
+                        if (isset($jdata['download'])) {
+                            // Umrechnung auf 2 Nachkommastellen
+                            $download = floor(floatval($jdata['download']) / 10000) / 100;
                         }
-                        if (isset($jdata['upload']['bandwidth'])) {
-                            // Umrechnung von Bit auf MBit mit 2 Nachkommastellen
-                            $upload = floor(floatval($jdata['upload']['bandwidth']) * 8.0 / 10000) / 100;
+                        if (isset($jdata['upload'])) {
+                            // Umrechnung auf 2 Nachkommastellen
+                            $upload = floor(floatval($jdata['upload']) / 10000) / 100;
                         }
                         break;
                 }
