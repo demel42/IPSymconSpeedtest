@@ -107,6 +107,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.3 @ 02.01.2022 11:58
+  - "Original Speedtest von Ookla" akzeptiert nun die Lizenzen bei jedem Abruf
+  - Anzeige der Modul/Bibliotheks-Informationen
+
 - 2.2 @ 13.08.2021 17:36
   - Anpassungen für IPS 6
     - IPS_LogMessage(...) ersetzt durch $this->LogMessage(..., KL_MESSAGE);
