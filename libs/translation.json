@@ -1,0 +1,11 @@
+{
+	"translations": {
+		"de": {
+			"__status__": "",
+			"Instance is inactive (service failure)": "Instanz ist inaktiv (Service nicht verfügbar)",
+			"Instance is inactive (unknown server)": "Instanz ist inaktiv (unbekannter Server)",
+
+			"__end__": ""
+		}
+	}
+}

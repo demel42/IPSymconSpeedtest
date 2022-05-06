@@ -4,9 +4,9 @@
 	"name": "Internet-Speedtest",
 	"url": "https://github.com/demel42/IPSymconSpeedtest",
 	"compatibility": {
-		"version": "5.3"
+		"version": "6.0"
 	},
-	"version": "2.3",
+	"version": "2.4",
 	"build": 0,
-	"date": 1641121098
+	"date": 1651832965
 }

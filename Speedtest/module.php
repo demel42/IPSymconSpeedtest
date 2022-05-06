@@ -2,16 +2,22 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
-require_once __DIR__ . '/../libs/local.php';   // lokale Funktionen
+require_once __DIR__ . '/../libs/common.php';
+require_once __DIR__ . '/../libs/local.php';
 
 class Speedtest extends IPSModule
 {
-    use SpeedtestCommonLib;
+    use Speedtest\StubsCommonLib;
     use SpeedtestLocalLib;
 
-    public static $Mode_SpeedtestCli = 0;
-    public static $Mode_Ookla = 1;
+    private $ModuleDir;
+
+    public function __construct(string $InstanceID)
+    {
+        parent::__construct($InstanceID);
+
+        $this->ModuleDir = __DIR__;
+    }
 
     public function Create()
     {
@@ -30,45 +36,80 @@ class Speedtest extends IPSModule
 
         $this->RegisterPropertyBoolean('with_logging', false);
 
-        $this->RegisterTimer('UpdateData', 0, 'Speedtest_UpdateData(' . $this->InstanceID . ');');
+        $this->RegisterAttributeString('UpdateInfo', '');
 
-        $this->CreateVarProfile('Speedtest.ms', VARIABLETYPE_FLOAT, ' ms', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('Speedtest.MBits', VARIABLETYPE_FLOAT, ' MBit/s', 0, 0, 0, 1, '');
+        $this->InstallVarProfiles(false);
+
+        $this->RegisterTimer('UpdateData', 0, $this->GetModulePrefix() . '_UpdateData(' . $this->InstanceID . ');');
     }
 
-    private function CheckPrerequisites()
+    public function MessageSink($tstamp, $senderID, $message, $data)
     {
-        $s = '';
+        parent::MessageSink($tstamp, $senderID, $message, $data);
+
+        if ($message == IPS_KERNELMESSAGE && $data[0] == KR_READY) {
+            $this->SetUpdateInterval();
+        }
+    }
+
+    private function CheckModulePrerequisites()
+    {
+        $r = [];
 
         $version = $this->ReadPropertyInteger('program_version');
         $path = $this->ReadPropertyString('full_path');
         switch ($version) {
-            case self::$Mode_Ookla:
+            case self::$MODE_OOKLA:
                 $cmd = $path != '' ? $path : 'speedtest';
                 $cmd .= ' --version --accept-license --accept-gdpr';
                 $prog = 'speedtest';
                 break;
-            case self::$Mode_SpeedtestCli:
+            case self::$MODE_SPEEDTEST_CLI:
                 $cmd = $path != '' ? $path : 'speedtest-cli';
                 $cmd .= ' --version';
                 $prog = 'speedtest-cli';
                 break;
             default:
-                $s = $this->Translate('no valid program version selected');
+                $prog = '';
                 return $s;
         }
-        $data = exec($cmd . ' 2>&1', $output, $exitcode);
-        $this->SendDebug(__FUNCTION__, 'cmd=' . $cmd . ', exitcode=' . $exitcode . ', output=' . print_r($output, true), 0);
-        if ($exitcode != 0) {
-            $s = $this->Translate('The following system prerequisites are missing') . ': ' . $prog;
+
+        if ($prog != '') {
+            $data = exec($cmd . ' 2>&1', $output, $exitcode);
+            $this->SendDebug(__FUNCTION__, 'cmd=' . $cmd . ', exitcode=' . $exitcode . ', output=' . print_r($output, true), 0);
+            if ($exitcode != 0) {
+                $r[] = $this->TranslateFormat('Program "{$prog}" is not installed/functional', ['{$prog}' => $prog]);
+            }
+        } else {
+            $r[] = $this->Translate('no valid program version selected');
         }
 
-        return $s;
+        return $r;
     }
 
     public function ApplyChanges()
     {
         parent::ApplyChanges();
+
+        $this->MaintainReferences();
+
+        if ($this->CheckPrerequisites() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
+            return;
+        }
+
+        if ($this->CheckUpdate() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            return;
+        }
+
+        if ($this->CheckConfiguration() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            return;
+        }
 
         $vpos = 0;
         $this->MaintainVariable('ISP', $this->Translate('Internet-Provider'), VARIABLETYPE_STRING, '', $vpos++, true);
@@ -79,33 +120,26 @@ class Speedtest extends IPSModule
         $this->MaintainVariable('Download', $this->Translate('Download'), VARIABLETYPE_FLOAT, 'Speedtest.MBits', $vpos++, true);
         $this->MaintainVariable('LastTest', $this->Translate('Last test'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
-            return;
-        }
-
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
-            $this->SetTimerInterval('UpdateData', 0);
+            $this->MaintainTimer('UpdateData', 0);
             $this->SetStatus(IS_INACTIVE);
             return;
         }
 
         $this->SetStatus(IS_ACTIVE);
-        $this->SetUpdateInterval();
+
+        if (IPS_GetKernelRunlevel() == KR_READY) {
+            $this->SetUpdateInterval();
+        }
     }
 
     private function GetFormElements()
     {
-        $formElements = [];
+        $formElements = $this->GetCommonFormElements('Internet speedtest');
 
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => $s
-            ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            return $formElements;
         }
 
         $formElements[] = [
@@ -121,11 +155,11 @@ class Speedtest extends IPSModule
             'options' => [
                 [
                     'caption' => $this->Translate('Default version of speedtest-cli'),
-                    'value'   => self::$Mode_SpeedtestCli,
+                    'value'   => self::$MODE_SPEEDTEST_CLI,
                 ],
                 [
                     'caption' => $this->Translate('Original speedtest from Ookla'),
-                    'value'   => self::$Mode_Ookla,
+                    'value'   => self::$MODE_OOKLA,
                 ],
             ]
         ];
@@ -138,7 +172,7 @@ class Speedtest extends IPSModule
         $path = $this->ReadPropertyString('full_path');
         $version = $this->ReadPropertyInteger('program_version');
         switch ($version) {
-            case self::$Mode_SpeedtestCli:
+            case self::$MODE_SPEEDTEST_CLI:
                 $cmd = $path != '' ? $path : 'speedtest-cli';
                 $cmd .= ' --list';
                 $data = exec($cmd . ' 2>&1', $output, $exitcode);
@@ -157,7 +191,7 @@ class Speedtest extends IPSModule
                     }
                 }
                 break;
-            case self::$Mode_Ookla:
+            case self::$MODE_OOKLA:
                 $cmd = $path != '' ? $path : 'speedtest';
                 $cmd .= ' --servers';
                 $data = exec($cmd . ' 2>&1', $output, $exitcode);
@@ -185,7 +219,7 @@ class Speedtest extends IPSModule
             'options' => $options
         ];
 
-        if ($version == self::$Mode_SpeedtestCli) {
+        if ($version == self::$MODE_SPEEDTEST_CLI) {
             $formElements[] = [
                 'type'    => 'Label',
                 'caption' => 'Excluded server (comma-separated)'
@@ -220,13 +254,11 @@ class Speedtest extends IPSModule
         ];
 
         $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Update data every X minutes'
-        ];
-        $formElements[] = [
-            'type'    => 'NumberSpinner',
             'name'    => 'update_interval',
-            'caption' => 'Minutes'
+            'type'    => 'NumberSpinner',
+            'suffix'  => 'Minutes',
+            'minimum' => 0,
+            'caption' => 'Check interval'
         ];
 
         return $formElements;
@@ -236,35 +268,66 @@ class Speedtest extends IPSModule
     {
         $formActions = [];
 
-        $formActions[] = [
-            'type'    => 'Label',
-            'caption' => 'Updating the data takes up to 1 minute'
-        ];
-        $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Update data',
-            'onClick' => 'Speedtest_UpdateData($id);'
-        ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            $formActions[] = $this->GetCompleteUpdateFormAction();
+
+            $formActions[] = $this->GetInformationFormAction();
+            $formActions[] = $this->GetReferencesFormAction();
+
+            return $formActions;
+        }
 
         $formActions[] = [
-            'type'    => 'ExpansionPanel',
-            'caption' => 'Information',
+            'type'    => 'RowLayout',
             'items'   => [
                 [
+                    'type'    => 'Button',
+                    'caption' => 'Update data',
+                    'onClick' => $this->GetModulePrefix() . '_UpdateData($id);'
+                ],
+                [
                     'type'    => 'Label',
-                    'caption' => $this->InstanceInfo($this->InstanceID),
+                    'caption' => 'Updating the data takes up to 1 minute'
                 ],
             ],
         ];
 
+        $formActions[] = [
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Expert area',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Re-install variable-profiles',
+                    'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
+                ],
+            ],
+        ];
+
+        $formActions[] = $this->GetInformationFormAction();
+        $formActions[] = $this->GetReferencesFormAction();
+
         return $formActions;
+    }
+
+    public function RequestAction($ident, $value)
+    {
+        if ($this->CommonRequestAction($ident, $value)) {
+            return;
+        }
+        switch ($ident) {
+            default:
+                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
+                break;
+        }
     }
 
     protected function SetUpdateInterval()
     {
         $min = $this->ReadPropertyInteger('update_interval');
         $msec = $min > 0 ? $min * 1000 * 60 : 0;
-        $this->SetTimerInterval('UpdateData', $msec);
+        $this->MaintainTimer('UpdateData', $msec);
     }
 
     public function UpdateData()
@@ -285,7 +348,7 @@ class Speedtest extends IPSModule
         $path = $this->ReadPropertyString('full_path');
         $version = $this->ReadPropertyInteger('program_version');
         switch ($version) {
-            case self::$Mode_SpeedtestCli:
+            case self::$MODE_SPEEDTEST_CLI:
                 $cmd = $path != '' ? $path : 'speedtest-cli';
                 $cmd .= ' --json';
 
@@ -316,7 +379,7 @@ class Speedtest extends IPSModule
                     }
                 }
                 break;
-            case self::$Mode_Ookla:
+            case self::$MODE_OOKLA:
                 $cmd = $path != '' ? $path : 'speedtest';
                 $cmd .= ' --format=json --accept-license --accept-gdpr';
 
@@ -341,7 +404,7 @@ class Speedtest extends IPSModule
         }
 
         switch ($version) {
-            case self::$Mode_SpeedtestCli:
+            case self::$MODE_SPEEDTEST_CLI:
                 if (preg_match('/speedtest-cli: error:\s(.*?)$/', $data, $r)) {
                     $err = $r[1];
                     $ok = false;
@@ -351,7 +414,7 @@ class Speedtest extends IPSModule
                     $ok = false;
                 }
                 break;
-            case self::$Mode_Ookla:
+            case self::$MODE_OOKLA:
                 if (preg_match('/^\[error\]\s(.*?)$/', $data, $r)) {
                     $err = $r[1];
                     $ok = false;
@@ -378,7 +441,7 @@ class Speedtest extends IPSModule
             } else {
                 $this->SendDebug(__FUNCTION__, 'jdata=' . print_r($jdata, true), 0);
                 switch ($version) {
-                    case self::$Mode_SpeedtestCli:
+                    case self::$MODE_SPEEDTEST_CLI:
                         if (isset($jdata['client']['isp'])) {
                             $isp = $jdata['client']['isp'];
                         }
@@ -403,7 +466,7 @@ class Speedtest extends IPSModule
                             $upload = floor($jdata['upload'] / (1024 * 1024) * 10000) / 10000;
                         }
                         break;
-                    case self::$Mode_Ookla:
+                    case self::$MODE_OOKLA:
                         if (isset($jdata['isp'])) {
                             $isp = $jdata['isp'];
                         }

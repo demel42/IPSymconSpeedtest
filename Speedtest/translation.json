@@ -1,0 +1,46 @@
+{
+	"translations": {
+		"de": {
+			"Internet speedtest": "Internet speedtest",
+
+			"__function__": "CheckPrerequisites",
+			"Program \"{$prog}\" is not installed/functional": "Programm \"{$prog}\" ist nicht installiert/funktionell",
+			"no valid program version selected": "keine gültige Programmversion ausgewählt",
+
+			"__elements__": "",
+			"Disable instance": "Instanz deaktivieren",
+
+			"Preferred server": "bevorzugter Server",
+			"automatically select" : "automatische Auswahl",
+
+			"Excluded server (comma-separated)": "Auszuschliessende Server (Komma-separiert)",
+			"List": "Liste",
+			"Set option --no_pre_allocate" : "Option --no_pre_allocate setzen",
+
+			"Full qualified path to testprogram, only needed if irregular installed":
+				"Vollständiger Pfad zum Testprogramm, wird nur bei irregulärer Installation benötigt",
+			"Program path": "Programmpfad",
+
+			"Check interval": "Aktualisierungsintervall",
+			"Minutes": "Minuten",
+
+			"__options__": "",
+			"Program version": "Programmversion",
+			"Default version of speedtest-cli": "Standardversion von speedtest-cli",
+			"Original speedtest from Ookla": "Original speedtest von Ookla",
+
+			"Updating the data takes up to 1 minute": "Die Aktualisierung dauert bis zu einer Minute",
+			"Update data": "Aktualisiere Daten",
+
+			"Internet-Provider": "Internet-Provider",
+			"external IP": "externe IP",
+			"Server": "Server",
+			"Ping": "Ping",
+			"Upload": "Upload",
+			"Download": "Download",
+			"Last test": "letzter Test",
+
+			"__end__": ""
+		}
+	}
+}

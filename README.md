@@ -1,6 +1,6 @@
 # IPSymconSpeedtest
 
-[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.3+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![IPS-Version](https://img.shields.io/badge/Symcon_Version-6.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -22,8 +22,7 @@ _Speedtest_ von _Ookla_ (https://www.speedtest.net) bietet ein Tool zu Ermittlun
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 5.3<br>
-   Version 4.4 mit Branch _ips_4.4_ (nur noch Fehlerkorrekturen)
+ - IP-Symcon ab Version 6.0
 
 ## 3. Installation
 
@@ -106,6 +105,13 @@ GUIDs
   - Speedtest: `{C631E099-15CB-4CF7-9E7C-C55F63912BE5}`
 
 ## 7. Versions-Historie
+
+- 2.4 @ 06.05.2022 12:29
+  - IPS-Version ist nun minimal 6.0
+  - Anzeige der Modul/Bibliotheks-Informationen, Referenzen und Timer
+  - Implememtierung einer Update-Logik
+  - Überlagerung von Translate und Aufteilung von locale.json in 3 translation.json (Modul, libs und CommonStubs)
+  - diverse interne Änderungen
 
 - 2.3 @ 02.01.2022 11:58
   - "Original Speedtest von Ookla" akzeptiert nun die Lizenzen bei jedem Abruf
