@@ -40,7 +40,9 @@ class Speedtest extends IPSModule
 
         $this->InstallVarProfiles(false);
 
-        $this->RegisterTimer('UpdateData', 0, $this->GetModulePrefix() . '_UpdateData(' . $this->InstanceID . ');');
+        $this->RegisterTimer('UpdateData', 0, 'IPS_RequestAction(' . $this->InstanceID . ', "UpdateData", "");');
+
+        $this->RegisterMessage(0, IPS_KERNELMESSAGE);
     }
 
     public function MessageSink($tstamp, $senderID, $message, $data)
@@ -283,7 +285,7 @@ class Speedtest extends IPSModule
                 [
                     'type'    => 'Button',
                     'caption' => 'Update data',
-                    'onClick' => $this->GetModulePrefix() . '_UpdateData($id);'
+                    'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "UpdateData", "");',
                 ],
                 [
                     'type'    => 'Label',
@@ -297,11 +299,7 @@ class Speedtest extends IPSModule
             'caption'   => 'Expert area',
             'expanded ' => false,
             'items'     => [
-                [
-                    'type'    => 'Button',
-                    'caption' => 'Re-install variable-profiles',
-                    'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
-                ],
+                $this->GetInstallVarProfilesFormItem(),
             ],
         ];
 
@@ -317,20 +315,23 @@ class Speedtest extends IPSModule
             return;
         }
         switch ($ident) {
+            case 'UpdateData':
+                $this->UpdateData();
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
                 break;
         }
     }
 
-    protected function SetUpdateInterval()
+    private function SetUpdateInterval()
     {
         $min = $this->ReadPropertyInteger('update_interval');
         $msec = $min > 0 ? $min * 1000 * 60 : 0;
         $this->MaintainTimer('UpdateData', $msec);
     }
 
-    public function UpdateData()
+    private function UpdateData()
     {
         $preferred_server = $this->ReadPropertyInteger('preferred_server');
         $exclude_server = $this->ReadPropertyString('exclude_server');
