@@ -106,6 +106,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.5.1 @ 28.05.2022 11:37
+  - update submodule CommonStubs
+    Fix: Ausgabe des nächsten Timer-Zeitpunkts
+
 - 2.5 @ 28.05.2022 08:39
   - Fix: nach IPS-Neustart wurde der Timer nicht mehr gesetzt
   - update submodule CommonStubs
