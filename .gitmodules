@@ -4,6 +4,3 @@
 [submodule "libs/CommonStubs"]
 	path = libs/CommonStubs
 	url = https://github.com/demel42/CommonStubs.git
-[submodule "Speedtest/libs/CommonStubs"]
-	path = Speedtest/libs/CommonStubs
-	url = https://github.com/demel42/CommonStubs.git
