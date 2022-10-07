@@ -106,6 +106,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.6.1 @ 07.10.2022 13:59
+  - update submodule CommonStubs
+    Fix: Update-Prüfung wieder funktionsfähig
+
 - 2.6 @ 05.07.2022 16:48
   - Verbesserung: IPS-Status wird nur noch gesetzt, wenn er sich ändert
   - update submodule CommonStubs
