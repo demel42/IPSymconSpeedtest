@@ -241,7 +241,7 @@ class Speedtest extends IPSModule
         $formElements[] = [
             'type'      => 'ExpansionPanel',
             'caption'   => 'Expert area',
-            'expanded ' => false,
+            'expanded'  => false,
             'items'     => [
                 [
                     'type'    => 'Label',
@@ -297,7 +297,7 @@ class Speedtest extends IPSModule
         $formActions[] = [
             'type'      => 'ExpansionPanel',
             'caption'   => 'Expert area',
-            'expanded ' => false,
+            'expanded'  => false,
             'items'     => [
                 $this->GetInstallVarProfilesFormItem(),
             ],
