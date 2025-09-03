@@ -106,6 +106,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.11 @ 03.09.2025 17:06
+  - Fix: Angabe zum "vendor" fehlte
+
 - 2.10 @ 02.01.2025 14:28
   - interne Änderung
   - update submodule CommonStubs
