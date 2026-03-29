@@ -106,6 +106,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.12 @ 29.03.2026 15:07
+  - Fix: Anpassung für IPS 9
+  - update submodule CommonStubs
+
 - 2.11 @ 03.09.2025 17:06
   - Fix: Angabe zum "vendor" fehlte
 
